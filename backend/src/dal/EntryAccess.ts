@@ -74,12 +74,14 @@ export class EntryAccess {
       TableName: this.entriesTable,
       Key: key,
       ExpressionAttributeNames: { '#N': 'name' },
-      UpdateExpression: `set #N = :n, dueDate=:due, done=:d, ${updatedEntry.attachmentUrl ? 'attachmentUrl=:a' : ''}`,
+      UpdateExpression: `set #N = :n, dueDate=:due, done=:d${updatedEntry.attachmentUrl ? ', attachmentUrl=:a' : ''}
+      ${updatedEntry.entryBody ? ', body=:b' : ''}`,
       ExpressionAttributeValues:{
         ':n':updatedEntry.name,
         ':due':updatedEntry.dueDate,
         ':d':updatedEntry.done,
-        ':a':updatedEntry.attachmentUrl
+        ':a':updatedEntry.attachmentUrl,
+        ':b':updatedEntry.entryBody
       },
       ReturnValues:'UPDATED_NEW'
     }).promise()

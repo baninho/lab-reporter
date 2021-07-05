@@ -7,4 +7,5 @@ export interface EntryItem {
   dueDate: string
   done: boolean
   attachmentUrl?: string
+  body?: string
 }

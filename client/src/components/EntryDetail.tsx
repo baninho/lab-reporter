@@ -2,7 +2,7 @@ import * as React from 'react'
 import Auth from '../auth/Auth'
 import { getEntryById } from '../api/entries-api'
 import { Entry } from '../types/Entry'
-import { Grid, Loader } from 'semantic-ui-react'
+import { Grid, Header, Loader } from 'semantic-ui-react'
 
 interface EntryDetailProps {
   match: {
@@ -42,7 +42,14 @@ export class EntryDetail extends React.PureComponent<
   renderEntry() {
     return (
       <div>
-        <h1>{this.state.entry[0] ? this.state.entry[0].name : ''}</h1>
+        <Header as="h1">{this.state.entry[0] ? this.state.entry[0].name : ''}</Header>
+        <Grid padded>
+          <Grid.Row>
+            <Grid.Column>
+              {this.state.entry[0].body}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }

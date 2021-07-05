@@ -3,6 +3,8 @@ import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entries-api'
 import { Entry } from '../types/Entry'
+import { UpdateEntryRequest } from '../types/UpdateEntryRequest'
+import { History } from 'history'
 
 enum UploadState {
   NoUpload,
@@ -17,11 +19,14 @@ interface EditTodoProps {
     }
   }
   auth: Auth
+  history: History
 }
 
 interface EditTodoState {
   file: any
   uploadState: UploadState
+  entry?: Entry
+  entryBody?: string
 }
 
 export class EditTodo extends React.PureComponent<
@@ -30,7 +35,9 @@ export class EditTodo extends React.PureComponent<
 > {
   state: EditTodoState = {
     file: undefined,
-    uploadState: UploadState.NoUpload
+    uploadState: UploadState.NoUpload,
+    entry: undefined,
+    entryBody: undefined
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +49,16 @@ export class EditTodo extends React.PureComponent<
     })
   }
 
-  handleSubmit = async (event: React.SyntheticEvent) => {
+  handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const entryBody = event.target.value
+    if (!entryBody) return
+
+    this.setState({
+      entryBody: entryBody
+    })
+  }
+
+  handleUpload = async (event: React.SyntheticEvent) => {
     const fileExtRegex = /\.\w+$/i
     event.preventDefault()
 
@@ -52,20 +68,27 @@ export class EditTodo extends React.PureComponent<
         return
       }
 
+      if (!this.state.entry) {
+        alert('Konnte Eintrag nicht laden')
+        return
+      }
+
       this.setUploadState(UploadState.FetchingPresignedUrl)
       const fileExtMatch = this.state.file.name.match(fileExtRegex)
       const fileExt: string = fileExtMatch ? fileExtMatch[0] : ''
+
       const attachmentInfo: any = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.todoId, fileExt)
-      const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.todoId)
+
+      const updatedEntry: UpdateEntryRequest = {
+        name: this.state.entry.name,
+        dueDate: this.state.entry.dueDate,
+        done: this.state.entry.done,
+        attachmentUrl: attachmentInfo.attachmentUrl
+      }
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(attachmentInfo.uploadUrl, this.state.file)
-      await patchEntry(this.props.auth.getIdToken(), this.props.match.params.todoId, {
-        name: entry.name,
-        dueDate: entry.dueDate,
-        done: entry.done,
-        attachmentUrl: attachmentInfo.attachmentUrl
-      })
+      await patchEntry(this.props.auth.getIdToken(), this.props.match.params.todoId, updatedEntry)
 
       alert('File was uploaded!')
     } catch (e) {
@@ -75,9 +98,44 @@ export class EditTodo extends React.PureComponent<
     }
   }
 
+  handleSubmit = async (event: React.SyntheticEvent) => {
+    event.preventDefault()
+
+    try {
+      if (!this.state.entry) {
+        alert('Konnte Eintrag nicht laden')
+        return
+      }
+
+      const updatedEntry: UpdateEntryRequest = {
+        name: this.state.entry.name,
+        dueDate: this.state.entry.dueDate,
+        done: this.state.entry.done,
+      }
+
+      if (this.state.entryBody)
+        updatedEntry.entryBody = this.state.entryBody
+
+      await patchEntry(this.props.auth.getIdToken(), this.props.match.params.todoId, updatedEntry)
+    } catch (e) {
+      alert('Nicht aktualisiert: ' + e.message)
+    } finally {
+      this.props.history.push('/')
+    }
+  }
+
   setUploadState(uploadState: UploadState) {
     this.setState({
       uploadState
+    })
+  }
+
+  async componentDidMount() {
+    const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.todoId)
+
+    this.setState({
+      entry,
+      entryBody: entry.body
     })
   }
 
@@ -87,8 +145,15 @@ export class EditTodo extends React.PureComponent<
         <h1>Eintrag bearbeiten</h1>
 
         <Form onSubmit={this.handleSubmit}>
+          <Form.TextArea
+            label="Eintrag"
+            rows={10}
+            placeholder={this.state.entry ? (this.state.entry.body ? this.state.entry.body : 'Eintrag hier verfassen') : ''}
+            value={this.state.entryBody ? this.state.entryBody : ''}
+            onChange={this.handleBodyChange}
+          />
           <Form.Field>
-            <label>File</label>
+            <label>Datei anfügen</label>
             <input
               type="file"
               accept="image/*"
@@ -111,9 +176,15 @@ export class EditTodo extends React.PureComponent<
         {this.state.uploadState === UploadState.UploadingFile && <p>Uploading file</p>}
         <Button
           loading={this.state.uploadState !== UploadState.NoUpload}
-          type="submit"
+          onClick={this.handleUpload}
         >
           Upload
+        </Button>
+        <Button
+          loading={this.state.uploadState !== UploadState.NoUpload}
+          tpye="submit"
+        >
+          Eintrag aktualisieren
         </Button>
       </div>
     )

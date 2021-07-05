@@ -6,4 +6,5 @@ export interface UpdateEntryRequest {
   dueDate: string
   done: boolean
   attachmentUrl?: string
+  entryBody?: string
 }
