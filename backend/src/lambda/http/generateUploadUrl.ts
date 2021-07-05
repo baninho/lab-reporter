@@ -22,7 +22,7 @@ const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const body = JSON.parse(event.body)
   const entryId: string = event.pathParameters.entryId
-  const fileExt: string = body.fileExt ? `.${body.fileExt}` : ''
+  const fileExt: string = body.fileExt ? body.fileExt : ''
   const attachmentId: string = radix64(uuid.v4())
   const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${entryId}/${attachmentId + fileExt}`
 
