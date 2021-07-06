@@ -193,8 +193,8 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {entry.attachmentUrl && (
-                <Image src={entry.attachmentUrl} size="small" wrapped />
+              {entry.attachmentUrls[0] && (
+                <Image src={entry.attachmentUrls[0]} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />

@@ -6,6 +6,6 @@ export interface EntryItem {
   name: string
   dueDate: string
   done: boolean
-  attachmentUrl?: string
+  attachmentUrls: string[]
   body?: string
 }

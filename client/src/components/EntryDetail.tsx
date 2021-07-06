@@ -2,7 +2,7 @@ import * as React from 'react'
 import Auth from '../auth/Auth'
 import { getEntryById } from '../api/entries-api'
 import { Entry } from '../types/Entry'
-import { Grid, Header, Loader } from 'semantic-ui-react'
+import { Grid, Header, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
 
 interface EntryDetailProps {
   match: {
@@ -14,7 +14,7 @@ interface EntryDetailProps {
 }
 
 interface EntryDetailState {
-  entry: Entry[]
+  entry?: Entry
   loadingEntries: boolean
 }
 
@@ -23,7 +23,7 @@ export class EntryDetail extends React.PureComponent<
   EntryDetailState
 > {
   state: EntryDetailState = {
-    entry: [],
+    entry: undefined,
     loadingEntries: true
   }
 
@@ -31,7 +31,7 @@ export class EntryDetail extends React.PureComponent<
     try {
       const entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
       this.setState({
-        entry: [entry],
+        entry,
         loadingEntries: false
       })
     } catch (e) {
@@ -42,12 +42,20 @@ export class EntryDetail extends React.PureComponent<
   renderEntry() {
     return (
       <div>
-        <Header as="h1">{this.state.entry[0] ? this.state.entry[0].name : ''}</Header>
+        <Header as="h1">{this.state.entry ? this.state.entry.name : ''}</Header>
         <Grid padded>
           <Grid.Row>
             <Grid.Column>
-              {this.state.entry[0].body}
+              {this.state.entry ? this.state.entry.body : ''}
             </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <SegmentGroup>
+              {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
+                return (
+                  <Segment><a href={url}>{url}</a></Segment>
+                )}) : ''}
+            </SegmentGroup>
           </Grid.Row>
         </Grid>
       </div>

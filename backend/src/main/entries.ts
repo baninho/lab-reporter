@@ -13,18 +13,19 @@ export async function createEntry(entryRequest: CreateEntryRequest, userId: stri
   const createdAt = new Date().toISOString()
   const done = false
 
-  const todoItem: EntryItem = {
+  const entry: EntryItem = {
     userId,
     entryId,
     createdAt,
     done,
     groupId: userId,
+    attachmentUrls: [],
     ...entryRequest
   }
 
-  await entryAccess.createEntry(todoItem)
+  await entryAccess.createEntry(entry)
 
-  return todoItem
+  return entry
 }
 
 export async function getEntriesByUser(userId:string): Promise<EntryItem[]> {

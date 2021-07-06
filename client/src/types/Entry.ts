@@ -4,6 +4,6 @@ export interface Entry {
   name: string
   dueDate: string
   done: boolean
-  attachmentUrl?: string
+  attachmentUrls: string[]
   body?: string
 }
