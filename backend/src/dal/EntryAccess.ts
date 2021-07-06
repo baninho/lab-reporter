@@ -66,25 +66,33 @@ export class EntryAccess {
   }
 
   async updateEntry(updatedEntry: UpdateEntryRequest, entryId: string, userId: string) {
-    const key = await this.getEntryKeyById(entryId)
+    const entry = await this.getEntryById(entryId)
+    const key = {
+      createdAt: entry.createdAt,
+      groupId: userId // TODO: implement groups
+    }
     
-    key.groupId = userId
-  
-    await this.docClient.update({
-      TableName: this.entriesTable,
-      Key: key,
-      ExpressionAttributeNames: { '#N': 'name' },
-      UpdateExpression: `set #N = :n, dueDate=:due, done=:d${updatedEntry.attachmentUrl ? ', attachmentUrl=:a' : ''}
-      ${updatedEntry.entryBody ? ', body=:b' : ''}`,
-      ExpressionAttributeValues:{
-        ':n':updatedEntry.name,
-        ':due':updatedEntry.dueDate,
-        ':d':updatedEntry.done,
-        ':a':updatedEntry.attachmentUrl,
-        ':b':updatedEntry.entryBody
-      },
-      ReturnValues:'UPDATED_NEW'
-    }).promise()
+    if (updatedEntry.attachmentUrl)
+      entry.attachmentUrls.push(updatedEntry.attachmentUrl)
+
+    try {
+      await this.docClient.update({
+        TableName: this.entriesTable,
+        Key: key,
+        ExpressionAttributeNames: { '#N': 'name' },
+        UpdateExpression: `set #N = :n, dueDate=:due, done=:d, attachmentUrls=:a${updatedEntry.entryBody ? ', body=:b' : ''}`,
+        ExpressionAttributeValues:{
+          ':n':updatedEntry.name,
+          ':due':updatedEntry.dueDate,
+          ':d':updatedEntry.done,
+          ':a':entry.attachmentUrls,
+          ':b':updatedEntry.entryBody
+        },
+        ReturnValues:'UPDATED_NEW'
+      }).promise()
+    } catch (e) {
+      throw e
+    }
   }
 
   private async getEntryKeyById(entryId: string): Promise<EntryKey> {
