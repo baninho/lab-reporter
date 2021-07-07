@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button, Grid, Loader } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entries-api'
 import { Entry } from '../types/Entry'
@@ -27,6 +27,7 @@ interface EditTodoState {
   uploadState: UploadState
   entry?: Entry
   entryBody?: string
+  loadingEntries: boolean
 }
 
 export class EditTodo extends React.PureComponent<
@@ -37,7 +38,8 @@ export class EditTodo extends React.PureComponent<
     file: undefined,
     uploadState: UploadState.NoUpload,
     entry: undefined,
-    entryBody: undefined
+    entryBody: undefined,
+    loadingEntries: true
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,11 +137,12 @@ export class EditTodo extends React.PureComponent<
 
     this.setState({
       entry,
-      entryBody: entry.body
+      entryBody: entry.body,
+      loadingEntries: false
     })
   }
 
-  render() {
+  renderEdit() {
     return (
       <div>
         <h1>Eintrag bearbeiten</h1>
@@ -168,6 +171,16 @@ export class EditTodo extends React.PureComponent<
     )
   }
 
+  renderLoading() {
+    return (
+      <Grid.Row>
+        <Loader indeterminate active inline="centered">
+          Lade Eintrag
+        </Loader>
+      </Grid.Row>
+    )
+  }
+
   renderButton() {
 
     return (
@@ -188,5 +201,13 @@ export class EditTodo extends React.PureComponent<
         </Button>
       </div>
     )
+  }
+
+  render() {
+    if (this.state.loadingEntries) {
+      return this.renderLoading()
+    }
+
+    return this.renderEdit()
   }
 }
