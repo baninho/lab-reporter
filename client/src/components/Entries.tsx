@@ -5,7 +5,6 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
@@ -163,12 +162,6 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         {this.state.entries.map((entry, pos) => {
           return (
             <Grid.Row key={entry.entryId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onEntryCheck(pos)}
-                  checked={entry.done}
-                />
-              </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
                 <Link to={`/entries/${entry.entryId}`}>{entry.name}</Link>
               </Grid.Column>
