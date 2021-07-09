@@ -5,7 +5,6 @@ import { getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entri
 import { Entry } from '../types/Entry'
 import { UpdateEntryRequest } from '../types/UpdateEntryRequest'
 import { History } from 'history'
-import { EntryDetail } from './EntryDetail'
 
 enum UploadState {
   NoUpload,
