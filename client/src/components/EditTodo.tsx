@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Button, Grid, Loader } from 'semantic-ui-react'
+import { Form, Button, Grid, Loader, SegmentGroup, Segment, Icon } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entries-api'
 import { Entry } from '../types/Entry'
@@ -122,7 +122,7 @@ export class EditTodo extends React.PureComponent<
     } catch (e) {
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
-      this.props.history.push('/')
+      this.props.history.push(`/entries/${this.state.entry ? this.state.entry.entryId : ''}`)
     }
   }
 
@@ -156,6 +156,30 @@ export class EditTodo extends React.PureComponent<
             value={this.state.entryBody ? this.state.entryBody : ''}
             onChange={this.handleBodyChange}
           />
+          <b>Dateien</b>
+          <SegmentGroup>
+            {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
+              return (
+                <Segment>
+                  <Grid>
+                    <Grid.Column width={15} verticalAlign="middle">
+                      <a href={url}>{url}</a>
+                    </Grid.Column>
+                    <Grid.Column width={1} floated="right">
+                      <Button
+                        icon
+                        color="grey"
+                        // TODO: implement individual attachment deletion
+                        // onClick={() => this.onEntryDelete(entry.entryId)}
+                      >
+                        <Icon name="delete" />
+                      </Button>
+                    </Grid.Column>
+                  </Grid>
+                </Segment>
+              )
+            }) : ''}
+          </SegmentGroup>
           <Form.Field>
             <label>Datei anfügen</label>
             <input
