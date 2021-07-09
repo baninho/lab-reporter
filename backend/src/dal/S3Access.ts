@@ -10,13 +10,13 @@ export class S3Access{
     private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
   ) {}
 
-  async deleteObject(entryId: string){
-    logger.info(`deleting S3 object ${entryId}`)
+  async deleteObject(s3key: string){
+    logger.info(`deleting S3 object ${s3key}`)
     
     try {
       await this.s3.deleteObject({
         Bucket: this.bucketName,
-        Key: entryId
+        Key: s3key
       }).promise()
     } catch (e) {
       logger.error(`Error deleting S3 item`, { message: e.message })
