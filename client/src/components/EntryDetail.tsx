@@ -1,8 +1,9 @@
 import * as React from 'react'
 import Auth from '../auth/Auth'
-import { getEntryById } from '../api/entries-api'
+import { deleteEntry, getEntryById } from '../api/entries-api'
 import { Entry } from '../types/Entry'
-import { Grid, Header, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
+import { Button, Grid, Header, Icon, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
+import { History } from 'history'
 
 interface EntryDetailProps {
   match: {
@@ -11,6 +12,7 @@ interface EntryDetailProps {
     }
   }
   auth: Auth
+  history: History
 }
 
 interface EntryDetailState {
@@ -25,6 +27,21 @@ export class EntryDetail extends React.PureComponent<
   state: EntryDetailState = {
     entry: undefined,
     loadingEntries: true
+  }
+
+  onEntryDelete = async (entryId: string) => {
+    try {
+      await deleteEntry(this.props.auth.getIdToken(), entryId)
+
+    } catch (e) {
+      alert('Entry deletion failed: ' + e.message)
+    } finally {
+      this.props.history.push(`/`)
+    }
+  }
+
+  onEditButtonClick = (entryId: string) => {
+    this.props.history.push(`/entries/${entryId}/edit`)
   }
 
   async componentDidMount() {
@@ -42,7 +59,28 @@ export class EntryDetail extends React.PureComponent<
   renderEntry() {
     return (
       <div>
-        <Header as="h1">{this.state.entry ? this.state.entry.name : ''}</Header>
+        <Grid>
+          <Grid.Column width={14}>
+            <Header as="h1">{this.state.entry ? this.state.entry.name : ''}</Header>
+          </Grid.Column>
+          <Grid.Column width={2}>
+            <Button
+              icon
+              color="blue"
+              onClick={() => this.onEditButtonClick(this.state.entry ? this.state.entry.entryId : '')}
+            >
+              <Icon name="pencil" />
+            </Button>
+            <Button
+              icon
+              color="red"
+              onClick={() => this.onEntryDelete(this.state.entry ? this.state.entry.entryId : '')}
+            >
+              <Icon name="delete" />
+            </Button>
+          </Grid.Column>
+        </Grid>
+
         <Grid padded>
           <Grid.Row>
             <Grid.Column>
@@ -54,7 +92,8 @@ export class EntryDetail extends React.PureComponent<
               {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
                 return (
                   <Segment><a href={url}>{url}</a></Segment>
-                )}) : ''}
+                )
+              }) : ''}
             </SegmentGroup>
           </Grid.Row>
         </Grid>
