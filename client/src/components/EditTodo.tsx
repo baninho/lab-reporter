@@ -5,6 +5,7 @@ import { getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entri
 import { Entry } from '../types/Entry'
 import { UpdateEntryRequest } from '../types/UpdateEntryRequest'
 import { History } from 'history'
+import { EntryDetail } from './EntryDetail'
 
 enum UploadState {
   NoUpload,
@@ -145,7 +146,8 @@ export class EditTodo extends React.PureComponent<
   renderEdit() {
     return (
       <div>
-        <h1>Eintrag bearbeiten</h1>
+        <h2>Eintrag bearbeiten</h2>
+        <h1>{this.state.entry ? this.state.entry.name : ''}</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.TextArea
