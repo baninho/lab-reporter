@@ -175,7 +175,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               <Grid.Column width={3} floated="right">
                 {entry.dueDate}
               </Grid.Column>
-              <Grid.Column width={1} floated="right">
+              <Grid.Column width={2} floated="right">
                 <Button
                   icon
                   color="blue"
@@ -183,8 +183,6 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
                 >
                   <Icon name="pencil" />
                 </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="red"
