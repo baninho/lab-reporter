@@ -147,7 +147,6 @@ export class EditTodo extends React.PureComponent<
       <div>
         <h2>Eintrag bearbeiten</h2>
         <h1>{this.state.entry ? this.state.entry.name : ''}</h1>
-
         <Form onSubmit={this.handleSubmit}>
           <Form.TextArea
             label="Eintrag"
@@ -156,30 +155,8 @@ export class EditTodo extends React.PureComponent<
             value={this.state.entryBody ? this.state.entryBody : ''}
             onChange={this.handleBodyChange}
           />
-          <b>Dateien</b>
-          <SegmentGroup>
-            {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
-              return (
-                <Segment>
-                  <Grid>
-                    <Grid.Column width={15} verticalAlign="middle">
-                      <a href={url}>{url}</a>
-                    </Grid.Column>
-                    <Grid.Column width={1} floated="right">
-                      <Button
-                        icon
-                        color="grey"
-                        // TODO: implement individual attachment deletion
-                        // onClick={() => this.onEntryDelete(entry.entryId)}
-                      >
-                        <Icon name="delete" />
-                      </Button>
-                    </Grid.Column>
-                  </Grid>
-                </Segment>
-              )
-            }) : ''}
-          </SegmentGroup>
+          {this.state.entry && this.state.entry.attachmentUrls[0] && <b>Dateien</b>}
+          {this.state.entry && this.state.entry.attachmentUrls[0] ? this.renderFiles() : ''}
           <Form.Field>
             <label>Datei anfügen</label>
             <input
@@ -225,6 +202,34 @@ export class EditTodo extends React.PureComponent<
           Eintrag aktualisieren
         </Button>
       </div>
+    )
+  }
+
+  renderFiles() {
+    return (
+      <SegmentGroup>
+        {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
+          return (
+            <Segment>
+              <Grid>
+                <Grid.Column width={15} verticalAlign="middle">
+                  <a href={url}>{url}</a>
+                </Grid.Column>
+                <Grid.Column width={1} floated="right">
+                  <Button
+                    icon
+                    color="grey"
+                    // TODO: implement individual attachment deletion
+                    // onClick={() => this.onEntryDelete(entry.entryId)}
+                  >
+                    <Icon name="delete" />
+                  </Button>
+                </Grid.Column>
+              </Grid>
+            </Segment>
+          )
+        }) : ''}
+      </SegmentGroup>
     )
   }
 
