@@ -67,7 +67,7 @@ export class EntryDetail extends React.PureComponent<
             <Button
               icon
               color="blue"
-              onClick={() => this.onEditButtonClick(this.state.entry ? this.state.entry.entryId : '')}
+              onClick={() => this.onEditButtonClick(this.state.entry.entryId)}
             >
               <Icon name="pencil" />
             </Button>
