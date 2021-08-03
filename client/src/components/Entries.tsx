@@ -107,12 +107,12 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New entry',
+              content: 'Neuer Eintrag',
               onClick: this.onEntryCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="Choose a title"
+            placeholder="Titel des Eintrags"
             onChange={this.handleNameChange}
             value={this.state.newEntryName}
           />
