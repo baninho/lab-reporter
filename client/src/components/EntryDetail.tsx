@@ -66,17 +66,19 @@ export class EntryDetail extends React.PureComponent<
           <Grid.Column width={2}>
             <Button
               icon
-              color="blue"
-              onClick={() => this.onEditButtonClick(this.state.entry.entryId)}
+              color="red"
+              onClick={() => this.onEntryDelete(this.state.entry.entryId)}
+              floated="right"
             >
-              <Icon name="pencil" />
+              <Icon name="delete" />
             </Button>
             <Button
               icon
-              color="red"
-              onClick={() => this.onEntryDelete(this.state.entry.entryId)}
+              color="blue"
+              onClick={() => this.onEditButtonClick(this.state.entry.entryId)}
+              floated="right"
             >
-              <Icon name="delete" />
+              <Icon name="pencil" />
             </Button>
           </Grid.Column>
         </Grid>

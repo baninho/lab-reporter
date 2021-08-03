@@ -153,17 +153,19 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               <Grid.Column width={2} floated="right">
                 <Button
                   icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(entry.entryId)}
+                  color="red"
+                  onClick={() => this.onEntryDelete(entry.entryId)}
+                  floated="right"
                 >
-                  <Icon name="pencil" />
+                  <Icon name="delete" />
                 </Button>
                 <Button
                   icon
-                  color="red"
-                  onClick={() => this.onEntryDelete(entry.entryId)}
+                  color="blue"
+                  onClick={() => this.onEditButtonClick(entry.entryId)}
+                  floated="right"
                 >
-                  <Icon name="delete" />
+                  <Icon name="pencil" />
                 </Button>
               </Grid.Column>
               {entry.attachments[0] && (
