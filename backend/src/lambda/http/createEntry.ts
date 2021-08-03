@@ -13,8 +13,8 @@ import { createLogger } from '../../utils/logger'
 const logger = createLogger('createEntry')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const newTodo: CreateEntryRequest = JSON.parse(event.body)
-  const entryItem: EntryItem = await createEntry(newTodo, getUserId(event))
+  const newEntry: CreateEntryRequest = JSON.parse(event.body)
+  const entryItem: EntryItem = await createEntry(newEntry, getUserId(event))
 
   logger.info(`creating entry ${JSON.stringify(entryItem)}`)
 

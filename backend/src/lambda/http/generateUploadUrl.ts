@@ -25,12 +25,14 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const fileExt: string = body.fileExt ? body.fileExt : ''
   const attachmentId: string = radix64(uuid.v4())
   const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${entryId}/${attachmentId + fileExt}`
+  const key = `${entryId}/${attachmentId + fileExt}`
+  const createdAt = new Date().toISOString()
 
   logger.info(`Upload URL for entry ${entryId} requested`)
 
   const uploadUrl = s3.getSignedUrl('putObject', {
     Bucket: bucketName,
-    Key: `${entryId}/${attachmentId + fileExt}`,
+    Key: key,
     Expires: parseInt(urlExpiration)
   })
 
@@ -38,8 +40,11 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   return {
     statusCode: 200,
     body: JSON.stringify({
-      uploadUrl: uploadUrl,
-      attachmentUrl
+      key,
+      name: '',
+      createdAt,
+      attachmentUrl,
+      uploadUrl
     })
   }
 })

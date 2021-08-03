@@ -11,15 +11,13 @@ const entryAccess = new EntryAccess()
 export async function createEntry(entryRequest: CreateEntryRequest, userId: string):Promise<EntryItem> {
   const entryId = radix64(uuid.v4())
   const createdAt = new Date().toISOString()
-  const done = false
 
   const entry: EntryItem = {
     userId,
     entryId,
     createdAt,
-    done,
     groupId: userId,
-    attachmentUrls: [],
+    attachments: [],
     ...entryRequest
   }
 
@@ -42,4 +40,14 @@ export async function deleteEntry(entryId: string, userId: string) {
 
 export async function updateEntry(updatedEntry: UpdateEntryRequest, entryId: string, userId: string) {
   await entryAccess.updateEntry(updatedEntry, entryId, userId)
+}
+
+export async function deleteAttachment(entryId: string, key: string, userId: string) {
+  const entry: EntryItem = await entryAccess.getEntryById(entryId)
+  const updatedEntry: UpdateEntryRequest = {
+    name: entry.name,
+    delKey: key
+  }
+
+  updateEntry(updatedEntry, entryId, userId)
 }

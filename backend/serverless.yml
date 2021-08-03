@@ -134,6 +134,28 @@ functions:
           cors: true
           authorizer: Auth
 
+  DeleteAttachment:
+    handler: src/lambda/http/deleteAttachment.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ENTRY_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ENTRY_TABLE}/index/${self:provider.environment.ENTRY_ID_INDEX}
+      - Effect: Allow
+        Action:
+          - s3:DeleteObject
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENTS_BUCKET}/*
+    events:
+      - http:
+          method: delete
+          path: attachments/{entryId}/{key}
+          cors: true
+          authorizer: Auth
+
 resources:
   Resources:
     ImagesDynamoDBTable:

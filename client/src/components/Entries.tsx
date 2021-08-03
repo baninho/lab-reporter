@@ -1,6 +1,5 @@
 import dateFormat from 'dateformat'
 import { History } from 'history'
-import update from 'immutability-helper'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -14,7 +13,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createEntry, deleteEntry, getEntries, patchEntry } from '../api/entries-api'
+import { createEntry, deleteEntry, getEntries } from '../api/entries-api'
 import Auth from '../auth/Auth'
 import { Entry } from '../types/Entry'
 
@@ -52,7 +51,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         dueDate
       })
       this.setState({
-        entries: [...this.state.entries, newEntry],
+        entries: [newEntry, ...this.state.entries],
         newEntryName: ''
       })
     } catch(e) {
@@ -68,24 +67,6 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
       })
     } catch(e) {
       alert('Entry deletion failed: ' + e.message)
-    }
-  }
-
-  onEntryCheck = async (pos: number) => {
-    try {
-      const entry = this.state.entries[pos]
-      await patchEntry(this.props.auth.getIdToken(), entry.entryId, {
-        name: entry.name,
-        dueDate: entry.dueDate,
-        done: !entry.done
-      })
-      this.setState({
-        entries: update(this.state.entries, {
-          [pos]: { done: { $set: !entry.done } }
-        })
-      })
-    } catch(e) {
-      alert('Entry update failed: ' + e.message)
     }
   }
 
@@ -127,8 +108,9 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Choose a title"
             onChange={this.handleNameChange}
+            value={this.state.newEntryName}
           />
         </Grid.Column>
         <Grid.Column width={16}>
@@ -184,8 +166,8 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {entry.attachmentUrls[0] && (
-                <Image src={entry.attachmentUrls[0]} size="small" wrapped />
+              {entry.attachments[0] && (
+                <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />

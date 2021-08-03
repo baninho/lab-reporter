@@ -16,7 +16,7 @@ interface EntryDetailProps {
 }
 
 interface EntryDetailState {
-  entry?: Entry
+  entry: Entry
   loadingEntries: boolean
 }
 
@@ -25,7 +25,7 @@ export class EntryDetail extends React.PureComponent<
   EntryDetailState
 > {
   state: EntryDetailState = {
-    entry: undefined,
+    entry: new Entry(),
     loadingEntries: true
   }
 
@@ -61,7 +61,7 @@ export class EntryDetail extends React.PureComponent<
       <div>
         <Grid>
           <Grid.Column width={14}>
-            <Header as="h1">{this.state.entry ? this.state.entry.name : ''}</Header>
+            <Header as="h1">{this.state.entry.name}</Header>
           </Grid.Column>
           <Grid.Column width={2}>
             <Button
@@ -74,7 +74,7 @@ export class EntryDetail extends React.PureComponent<
             <Button
               icon
               color="red"
-              onClick={() => this.onEntryDelete(this.state.entry ? this.state.entry.entryId : '')}
+              onClick={() => this.onEntryDelete(this.state.entry.entryId)}
             >
               <Icon name="delete" />
             </Button>
@@ -84,16 +84,16 @@ export class EntryDetail extends React.PureComponent<
         <Grid padded>
           <Grid.Row>
             <Grid.Column>
-              {this.state.entry ? this.state.entry.body : ''}
+              {this.state.entry.body}
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <SegmentGroup>
-              {this.state.entry ? this.state.entry.attachmentUrls.map((url) => {
+              {this.state.entry.attachments.map((att) => {
                 return (
-                  <Segment><a href={url}>{url}</a></Segment>
+                  <Segment key={att.key}><a href={att.attachmentUrl}>{att.attachmentUrl}</a></Segment>
                 )
-              }) : ''}
+              })}
             </SegmentGroup>
           </Grid.Row>
         </Grid>
