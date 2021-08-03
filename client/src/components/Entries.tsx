@@ -63,6 +63,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
   }
 
   onEntryDelete = async (entryId: string) => {
+    if (!window.confirm('Wirklich löschen?')) return
     try {
       await deleteEntry(this.props.auth.getIdToken(), entryId)
       this.setState({

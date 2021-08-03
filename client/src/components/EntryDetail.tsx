@@ -29,7 +29,11 @@ export class EntryDetail extends React.PureComponent<
     loadingEntries: true
   }
 
-  onEntryDelete = async (entryId: string) => {
+  onEntryDelete = async (e: React.SyntheticEvent, entryId: string) => {
+    e.preventDefault()
+
+    if (!window.confirm('Wirklich löschen?')) return
+
     try {
       await deleteEntry(this.props.auth.getIdToken(), entryId)
 
@@ -67,7 +71,7 @@ export class EntryDetail extends React.PureComponent<
             <Button
               icon
               color="red"
-              onClick={() => this.onEntryDelete(this.state.entry.entryId)}
+              onClick={(e) => this.onEntryDelete(e, this.state.entry.entryId)}
               floated="right"
             >
               <Icon name="delete" />
