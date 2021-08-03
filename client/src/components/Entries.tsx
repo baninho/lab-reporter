@@ -54,6 +54,9 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         entries: [newEntry, ...this.state.entries],
         newEntryName: ''
       })
+
+      this.props.history.push(`/entries/${newEntry.entryId}/edit`)
+
     } catch(e) {
       alert('Entry creation failed: ' + e.message)
     }
