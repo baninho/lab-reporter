@@ -149,10 +149,10 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
           return (
             <Grid.Row key={entry.entryId}>
               <Grid.Column width={10} verticalAlign="middle">
-                <Link to={`/entries/${entry.entryId}`}>{entry.name}</Link>
+                <Link to={`/entries/${entry.entryId}`}><h3>{entry.name}</h3></Link>
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {entry.dueDate}
+                {entry.createdAt}
               </Grid.Column>
               <Grid.Column width={2} floated="right">
                 <Button
@@ -175,6 +175,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               {entry.attachments[0] && (
                 <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
               )}
+              {entry.body}
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
