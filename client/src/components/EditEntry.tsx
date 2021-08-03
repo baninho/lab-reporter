@@ -6,6 +6,7 @@ import { Entry } from '../types/Entry'
 import { UpdateEntryRequest } from '../types/UpdateEntryRequest'
 import { History } from 'history'
 import { Attachment } from '../types/Attachment'
+import { HashTable } from '../types/HashTable'
 
 enum UploadState {
   NoUpload,
@@ -30,6 +31,7 @@ interface EditEntryState {
   entryBody?: string
   loadingEntries: boolean
   fileInputKey: string
+  deleting: HashTable
 }
 
 export class EditEntry extends React.PureComponent<
@@ -42,7 +44,8 @@ EditEntryState
     entry: new Entry(),
     entryBody: undefined,
     loadingEntries: true,
-    fileInputKey: Date.now().toLocaleString()
+    fileInputKey: Date.now().toLocaleString(),
+    deleting: {}
   }
   
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +81,8 @@ EditEntryState
       const fileExt: string = fileExtMatch ? fileExtMatch[0] : ''
       
       const attachment: Attachment = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.entryId, fileExt)
+
+      attachment.name = this.state.file.name
       
       const updatedEntry: UpdateEntryRequest = {
         name: this.state.entry.name,
@@ -123,17 +128,27 @@ EditEntryState
     }
   }
   
+  /* 
+  * Delete an attachment from the database entry and from storage 
+  */
   handleAttachmentDelete = async (event: React.SyntheticEvent, key: string) => {
     event.preventDefault()
+    const deleting = { ...this.state.deleting}
     
     try {
+      deleting[key] = true
+      this.setState({
+        deleting
+      })
       await deleteAttachment(this.props.auth.getIdToken(), key)
     } catch (e) {
       alert ('Delete failed: ' + e.message)
     } finally {
       const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
+      deleting[key] = false
       this.setState({
-        entry
+        entry,
+        deleting
       })
     }
   }
@@ -157,11 +172,14 @@ EditEntryState
   
   async componentDidMount() {
     const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
+    const deleting: HashTable = {}
+    entry.attachments.map((att) => {deleting[att.key] = false})
     
     this.setState({
       entry,
       entryBody: entry.body,
-      loadingEntries: false
+      loadingEntries: false,
+      deleting
     })
   }
   
@@ -266,14 +284,14 @@ EditEntryState
           <Segment>
           <Grid>
           <Grid.Column width={15} verticalAlign="middle">
-          <a href={att.attachmentUrl}>{att.attachmentUrl}</a>
+          <a href={att.attachmentUrl}>{att.name}</a>
           </Grid.Column>
           <Grid.Column width={1} floated="right">
           <Button
           icon
           color="grey"
-          // TODO: implement individual attachment deletion
           onClick={(event) => {return (this.handleAttachmentDelete(event, att.key))}}
+          loading={this.state.deleting[att.key]}
           >
           <Icon name="delete" />
           </Button>

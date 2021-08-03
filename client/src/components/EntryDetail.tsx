@@ -97,7 +97,7 @@ export class EntryDetail extends React.PureComponent<
             <SegmentGroup>
               {this.state.entry.attachments.map((att) => {
                 return (
-                  <Segment key={att.key}><a href={att.attachmentUrl}>{att.attachmentUrl}</a></Segment>
+                  <Segment key={att.key}><a href={att.attachmentUrl}>{att.name}</a></Segment>
                 )
               })}
             </SegmentGroup>
