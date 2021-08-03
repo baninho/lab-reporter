@@ -6,7 +6,6 @@ export interface Entry {
   createdAt: string
   groupId: string
   name: string
-  dueDate: string
   attachments: Attachment[]
   body?: string
 }
@@ -18,7 +17,6 @@ export class Entry implements Entry {
     this.createdAt = ''
     this.groupId = ''
     this.name = ''
-    this.dueDate = ''
     this.attachments = []
     this.body = ''
   }
