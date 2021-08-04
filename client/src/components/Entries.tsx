@@ -175,7 +175,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               {entry.attachments[0] && (
                 <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
               )}
-              {entry.body}
+              <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>

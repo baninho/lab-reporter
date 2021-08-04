@@ -90,7 +90,7 @@ export class EntryDetail extends React.PureComponent<
         <Grid padded>
           <Grid.Row>
             <Grid.Column>
-              {this.state.entry.body}
+            <span style={{whiteSpace: "pre-wrap"}}>{this.state.entry.body}</span>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
