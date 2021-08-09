@@ -5,20 +5,21 @@ import { getUserId } from '../utils'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 import { createLogger } from '../../utils/logger'
-import { deleteEntry } from '../../main/entries'
-import { deleteAllObjects } from '../../main/attachments'
+import { deleteAttachment } from '../../main/entries'
+import { deleteObject } from '../../main/attachments'
 
-const logger = createLogger('deleteEntry')
+const logger = createLogger('deleteAttachment')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // Remove an Entry item by id
+  // Remove an Attachment by key
+  const key = event.pathParameters.key
   const entryId = event.pathParameters.entryId
   const userId = getUserId(event)
 
-  logger.info(`delete entry: ${entryId}, userId: ${userId}`)
+  logger.info(`delete attachment: ${key}, entryId: ${entryId}`)
 
-  await deleteAllObjects(entryId)
-  await deleteEntry(entryId, userId)
+  await deleteAttachment(entryId, `${entryId}/${key}`, userId)
+  await deleteObject(`${entryId}/${key}`)
 
   return {
     statusCode: 200,

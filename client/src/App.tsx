@@ -3,7 +3,7 @@ import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
-import { EditTodo } from './components/EditTodo'
+import { EditEntry } from './components/EditEntry'
 import { EntryDetail } from './components/EntryDetail'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
@@ -70,13 +70,13 @@ export default class App extends Component<AppProps, AppState> {
     if (this.props.auth.isAuthenticated()) {
       return (
         <Menu.Item name="logout" onClick={this.handleLogout}>
-          Log Out
+          Abmelden
         </Menu.Item>
       )
     } else {
       return (
         <Menu.Item name="login" onClick={this.handleLogin}>
-          Log In
+          Anmelden
         </Menu.Item>
       )
     }
@@ -98,10 +98,10 @@ export default class App extends Component<AppProps, AppState> {
         />
 
         <Route
-          path="/entries/:todoId/edit"
+          path="/entries/:entryId/edit"
           exact
           render={props => {
-            return <EditTodo {...props} auth={this.props.auth} />
+            return <EditEntry {...props} auth={this.props.auth} />
           }}
         />
 

@@ -3,6 +3,7 @@ import { Entry } from '../types/Entry';
 import { CreateEntryRequest } from '../types/CreateEntryRequest';
 import Axios from 'axios'
 import { UpdateEntryRequest } from '../types/UpdateEntryRequest';
+import { Attachment } from '../types/Attachment';
 
 export async function getEntries(idToken: string): Promise<Entry[]> {
   console.log('Fetching entries')
@@ -71,7 +72,7 @@ export async function getUploadUrl(
   idToken: string,
   todoId: string,
   fileExt: string
-): Promise<any> {
+): Promise<Attachment> {
   const response = await Axios.post(`${apiEndpoint}/entries/${todoId}/attachment`, JSON.stringify(
     {
       fileExt
@@ -88,4 +89,13 @@ export async function getUploadUrl(
 export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
   await Axios.put(uploadUrl, file)
 
+}
+
+export async function deleteAttachment(idToken:string, key:string): Promise<void> {
+  await Axios.delete(`${apiEndpoint}/attachments/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
 }

@@ -1,11 +1,9 @@
 import dateFormat from 'dateformat'
 import { History } from 'history'
-import update from 'immutability-helper'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
@@ -15,7 +13,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createEntry, deleteEntry, getEntries, patchEntry } from '../api/entries-api'
+import { createEntry, deleteEntry, getEntries } from '../api/entries-api'
 import Auth from '../auth/Auth'
 import { Entry } from '../types/Entry'
 
@@ -53,15 +51,19 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         dueDate
       })
       this.setState({
-        entries: [...this.state.entries, newEntry],
+        entries: [newEntry, ...this.state.entries],
         newEntryName: ''
       })
+
+      this.props.history.push(`/entries/${newEntry.entryId}/edit`)
+
     } catch(e) {
       alert('Entry creation failed: ' + e.message)
     }
   }
 
   onEntryDelete = async (entryId: string) => {
+    if (!window.confirm('Wirklich löschen?')) return
     try {
       await deleteEntry(this.props.auth.getIdToken(), entryId)
       this.setState({
@@ -69,24 +71,6 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
       })
     } catch(e) {
       alert('Entry deletion failed: ' + e.message)
-    }
-  }
-
-  onEntryCheck = async (pos: number) => {
-    try {
-      const entry = this.state.entries[pos]
-      await patchEntry(this.props.auth.getIdToken(), entry.entryId, {
-        name: entry.name,
-        dueDate: entry.dueDate,
-        done: !entry.done
-      })
-      this.setState({
-        entries: update(this.state.entries, {
-          [pos]: { done: { $set: !entry.done } }
-        })
-      })
-    } catch(e) {
-      alert('Entry update failed: ' + e.message)
     }
   }
 
@@ -123,13 +107,14 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New entry',
+              content: 'Neuer Eintrag',
               onClick: this.onEntryCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Titel des Eintrags"
             onChange={this.handleNameChange}
+            value={this.state.newEntryName}
           />
         </Grid.Column>
         <Grid.Column width={16}>
@@ -163,39 +148,34 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         {this.state.entries.map((entry, pos) => {
           return (
             <Grid.Row key={entry.entryId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onEntryCheck(pos)}
-                  checked={entry.done}
-                />
-              </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                <Link to={`/entries/${entry.entryId}`}>{entry.name}</Link>
+                <Link to={`/entries/${entry.entryId}`}><h3>{entry.name}</h3></Link>
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {entry.dueDate}
+                {entry.createdAt}
               </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(entry.entryId)}
-                >
-                  <Icon name="pencil" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
+              <Grid.Column width={2} floated="right">
                 <Button
                   icon
                   color="red"
                   onClick={() => this.onEntryDelete(entry.entryId)}
+                  floated="right"
                 >
                   <Icon name="delete" />
                 </Button>
+                <Button
+                  icon
+                  color="blue"
+                  onClick={() => this.onEditButtonClick(entry.entryId)}
+                  floated="right"
+                >
+                  <Icon name="pencil" />
+                </Button>
               </Grid.Column>
-              {entry.attachmentUrls[0] && (
-                <Image src={entry.attachmentUrls[0]} size="small" wrapped />
+              {entry.attachments[0] && (
+                <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
               )}
+              <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>

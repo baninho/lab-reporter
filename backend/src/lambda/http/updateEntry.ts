@@ -15,11 +15,11 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   // Update an entry item with the provided id using values in the "updatedEntry" object
   const entryId = event.pathParameters.entryId
   const userId = getUserId(event)
-  const updatedTodo: UpdateEntryRequest = JSON.parse(event.body)
+  const updatedEntry: UpdateEntryRequest = JSON.parse(event.body)
 
   logger.info(`update todo ${entryId}`)
 
-  updateEntry(updatedTodo, entryId, userId)
+  updateEntry(updatedEntry, entryId, userId)
 
   return {
     statusCode: 200,
