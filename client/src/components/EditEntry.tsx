@@ -173,7 +173,7 @@ EditEntryState
   async componentDidMount() {
     const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
     const deleting: HashTable = {}
-    entry.attachments.map((att) => {deleting[att.key] = false})
+    entry.attachments.forEach((att) => {deleting[att.key] = false})
     
     this.setState({
       entry,
