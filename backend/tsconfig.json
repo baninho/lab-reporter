@@ -3,6 +3,7 @@
     "lib": [
       "es2017"
     ],
+    "types": ["@types/jest", "node"],
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
