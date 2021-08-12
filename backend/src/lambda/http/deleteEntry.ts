@@ -1,9 +1,9 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { getUserId } from '../utils'
-import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import { getUserId } from '../../utils/utils'
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 import { createLogger } from '../../utils/logger'
 import { deleteEntry } from '../../main/entries'
 import { deleteAllObjects } from '../../main/attachments'
