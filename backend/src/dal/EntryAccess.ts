@@ -1,11 +1,8 @@
-import * as AWS  from 'aws-sdk'
-import * as AWSXRay  from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 import { EntryItem } from '../models/EntryItem'
 import { UpdateEntryRequest } from '../requests/UpdateEntryRequest'
-
-const XAWS = AWSXRay.captureAWS(AWS)
+import { createDynamoDBClient } from '../utils/utils'
 
 interface EntryKey {
   groupId?: string
@@ -110,16 +107,4 @@ export class EntryAccess {
       'createdAt': result.Items[0].createdAt
     }
   }
-}
-
-function createDynamoDBClient() {
-  if (process.env.IS_OFFLINE) {
-    console.log('Creating a local DynamoDB instance')
-    return new AWS.DynamoDB.DocumentClient({
-      region: 'localhost',
-      endpoint: 'http://localhost:8000'
-    })
-  }
-
-  return new XAWS.DynamoDB.DocumentClient()
 }
