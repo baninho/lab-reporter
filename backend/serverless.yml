@@ -4,8 +4,9 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
 
-# package:
-#   individually: true
+package:
+  patterns:
+    - '!test/**'
 
 provider:
   name: aws
