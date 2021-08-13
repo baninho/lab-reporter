@@ -24,8 +24,8 @@ beforeAll(() => {
   const ddb = new DocumentClient(config);
   
   userAccess = new UserAccess(ddb)
-  testUser = new User('test_id', 'test_user')
-  testUserQuery = new User('query_user_id', 'query_user')
+  testUser = new User('test_id', 'test_user', ['test_id'])
+  testUserQuery = new User('query_user_id', 'query_user', ['query_user_id'])
   testUserUpdate = {
     userId: 'test_id',
     name: 'changed_name'
