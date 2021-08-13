@@ -1,5 +1,6 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { User } from '../models/User';
+import { UpdateUserRequest } from '../requests/UpdateUserRequest';
 
 export class UserAccess {
   private readonly docClient: DocumentClient
@@ -30,5 +31,9 @@ export class UserAccess {
     }).promise()
 
     return result.Items[0] as User
+  }
+
+  async updateUser(testUserUpdate: UpdateUserRequest) {
+    throw new Error("Method not implemented." + testUserUpdate.userId);
   }
 }
