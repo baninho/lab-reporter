@@ -7,6 +7,7 @@ var userAccess: UserAccess
 var testUser: User
 var testUserQuery: User
 var testUserUpdate: UpdateUserRequest
+var testUserUpdateNewGroup: UpdateUserRequest
 
 beforeAll(() => {
   const isTest = process.env.JEST_WORKER_ID;
@@ -30,6 +31,10 @@ beforeAll(() => {
     userId: 'test_id',
     name: 'changed_name'
   }
+  testUserUpdateNewGroup = {
+    userId: 'test_id',
+    newGroup: 'new_group_id'
+  }
 })
 
 test('Create new user', async () => {
@@ -47,4 +52,10 @@ test('Update user name', async () => {
   await userAccess.updateUser(testUserUpdate)
   const res = await userAccess.getUserById(testUserUpdate.userId)
   expect(res.name).toMatch(testUserUpdate.name)
+})
+
+test('Add new group', async () => {
+  await userAccess.updateUser(testUserUpdateNewGroup)
+  const res = await userAccess.getUserById(testUserUpdateNewGroup.userId)
+  expect(res.groups).toContain(testUserUpdateNewGroup.newGroup)
 })
