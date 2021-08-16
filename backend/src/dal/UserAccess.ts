@@ -33,7 +33,20 @@ export class UserAccess {
     return result.Items[0] as User
   }
 
-  async updateUser(testUserUpdate: UpdateUserRequest) {
-    throw new Error("Method not implemented." + testUserUpdate.userId);
+  async updateUser(userUpdate: UpdateUserRequest) {
+    try {
+      await this.docClient.update({
+        TableName: this.usersTable,
+        Key: {userId: userUpdate.userId},
+        ExpressionAttributeNames: { '#N': 'name' },
+        UpdateExpression: `set #N = :n`,
+        ExpressionAttributeValues:{
+          ':n':userUpdate.name
+        },
+        ReturnValues:'UPDATED_NEW'
+      }).promise()
+    } catch (e) {
+      throw e
+    }
   }
 }
