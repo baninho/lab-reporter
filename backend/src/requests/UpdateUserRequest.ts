@@ -4,5 +4,5 @@
 export interface UpdateUserRequest {
   userId: string
   name?: string
-  newGroup?: string
+  newGroups?: string[]
 }

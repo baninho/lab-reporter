@@ -34,17 +34,35 @@ export class UserAccess {
   }
 
   async updateUser(userUpdate: UpdateUserRequest) {
+    const updateExpr: string[] = []
+    const exprAttrVals: any = {}
+    const exprAttrNames: any = {}
+
+    if (userUpdate.name) {
+      updateExpr.push('#N = :n')
+      exprAttrVals[':n'] = userUpdate.name
+      exprAttrNames['#N'] = 'name'
+    }
+
+    if (userUpdate.newGroups) {
+      updateExpr.push('groups = list_append(groups, :ng)')
+      exprAttrVals[':ng'] = userUpdate.newGroups
+    }
+
+    const params: DocumentClient.UpdateItemInput = {
+      TableName: this.usersTable,
+      Key: {userId: userUpdate.userId},
+      UpdateExpression: 'SET ' + updateExpr.join(','),
+      ExpressionAttributeValues: exprAttrVals,
+      ReturnValues:'UPDATED_NEW'
+    }
+
+    if (Object.keys(exprAttrNames).length > 0) {
+      params.ExpressionAttributeNames = exprAttrNames
+    }
+
     try {
-      await this.docClient.update({
-        TableName: this.usersTable,
-        Key: {userId: userUpdate.userId},
-        ExpressionAttributeNames: { '#N': 'name' },
-        UpdateExpression: `set #N = :n`,
-        ExpressionAttributeValues:{
-          ':n':userUpdate.name
-        },
-        ReturnValues:'UPDATED_NEW'
-      }).promise()
+      await this.docClient.update(params).promise()
     } catch (e) {
       throw e
     }

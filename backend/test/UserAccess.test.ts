@@ -33,7 +33,7 @@ beforeAll(() => {
   }
   testUserUpdateNewGroup = {
     userId: 'test_id',
-    newGroup: 'new_group_id'
+    newGroups: ['new_group_id']
   }
 })
 
@@ -57,5 +57,5 @@ test('Update user name', async () => {
 test('Add new group', async () => {
   await userAccess.updateUser(testUserUpdateNewGroup)
   const res = await userAccess.getUserById(testUserUpdateNewGroup.userId)
-  expect(res.groups).toContain(testUserUpdateNewGroup.newGroup)
+  expect(res.groups).toEqual(expect.arrayContaining(testUserUpdateNewGroup.newGroups))
 })
