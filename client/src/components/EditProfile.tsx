@@ -3,6 +3,8 @@ import { Container, Grid, Loader } from "semantic-ui-react";
 import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
+import { parseUserId } from "../util/utils";
+import { getUserById } from "../api/users-api";
 
 interface EditProfileProps {
   auth: Auth
@@ -21,15 +23,21 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
   }
 
   async componentDidMount() {
-    this.setState({
-      loading: false
-    })
+    try {
+      const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
+      this.setState({
+        user,
+        loading: false
+      })
+    } catch (e) {
+      alert(`Failed to fetch user: ${e.message}`)
+    }
   }
 
   renderProfileEdit() {
     return (
       <Container>
-        User edit
+        User edit {this.state.user.userId}
       </Container>
     )
   }
@@ -37,7 +45,7 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
     return (
       <Grid.Row>
       <Loader indeterminate active inline="centered">
-      Lade Eintrag
+        Ein Moment...
       </Loader>
       </Grid.Row>
       )
