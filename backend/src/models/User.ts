@@ -4,7 +4,7 @@ export class User {
   groups: string[]
 
   constructor(userId: string, name: string, groups: string[]){
-    this.userId = userId,
+    this.userId = userId
     this.name = name
     this.groups = groups
   }
