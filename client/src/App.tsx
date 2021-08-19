@@ -8,6 +8,7 @@ import { EntryDetail } from './components/EntryDetail'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Entries } from './components/Entries'
+import { EditProfile } from './components/EditProfile'
 
 export interface AppProps {}
 
@@ -55,7 +56,6 @@ export default class App extends Component<AppProps, AppState> {
                 <Grid.Column width={16}>
                   <Router history={this.props.history}>
                     {this.generateMenu()}
-
                     {this.generateCurrentPage()}
                   </Router>
                 </Grid.Column>
@@ -85,8 +85,8 @@ export default class App extends Component<AppProps, AppState> {
   profileButton() {
     if (this.props.auth.isAuthenticated()) { 
       return(
-        <Menu.Item name="profile" onClick={this.handleEditProfile}>
-          Profil
+        <Menu.Item name="profile" as="a">
+          <Link to="/profile">Profil</Link>
         </Menu.Item>
       )
     }
@@ -136,6 +136,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <EntryDetail {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/profile"
+          exact
+          render={props => {
+            return <EditProfile {...props} auth={this.props.auth} />
           }}
         />
 
