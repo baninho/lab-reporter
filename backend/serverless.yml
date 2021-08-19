@@ -57,6 +57,20 @@ functions:
               - UserID
           authorizer: Auth
 
+  UpdateUser:
+    handler: src/lambda/http/updateUser.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+    events:
+      - http:
+          method: patch
+          path: users
+          cors: true
+          authorizer: Auth
+
   GetEntries:
     handler: src/lambda/http/getEntries.handler
     iamRoleStatements:
