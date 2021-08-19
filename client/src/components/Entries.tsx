@@ -185,7 +185,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
                 <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
               </Grid.Column>
             </Grid.Row>
-            <Divider></Divider>
+            <Divider />
             </Grid>
           )
         })}
