@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Container, Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
 import { EditEntry } from './components/EditEntry'
@@ -37,19 +37,28 @@ export default class App extends Component<AppProps, AppState> {
   render() {
     return (
       <div>
-        <Segment style={{ padding: '4em 0em' }} vertical>
-          <Grid container stackable verticalAlign="middle">
-            <Grid.Row>
-              <Grid.Column width={16}>
-                <Router history={this.props.history}>
-                  {this.generateMenu()}
+        <Container>
+          <style>
+            {`
+            html, body {
+              background-color: beige;
+            }
+            `}
+          </style>
+          <Segment style={{ padding: '4em 0em' }} vertical>
+            <Grid container stackable verticalAlign="middle">
+              <Grid.Row>
+                <Grid.Column width={16}>
+                  <Router history={this.props.history}>
+                    {this.generateMenu()}
 
-                  {this.generateCurrentPage()}
-                </Router>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
+                    {this.generateCurrentPage()}
+                  </Router>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        </Container>
       </div>
     )
   }

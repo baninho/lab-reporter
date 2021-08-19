@@ -10,7 +10,8 @@ import {
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  Container
 } from 'semantic-ui-react'
 
 import { createEntry, deleteEntry, getEntries } from '../api/entries-api'
@@ -144,9 +145,10 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
   renderEntriesList() {
     return (
-      <Grid padded>
+      <Container>
         {this.state.entries.map((entry, pos) => {
           return (
+            <Grid>
             <Grid.Row key={entry.entryId}>
               <Grid.Column width={10} verticalAlign="middle">
                 <Link to={`/entries/${entry.entryId}`}><h3>{entry.name}</h3></Link>
@@ -172,17 +174,22 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
                   <Icon name="pencil" />
                 </Button>
               </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column width={2}>
               {entry.attachments[0] && (
                 <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
               )}
-              <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
-              <Grid.Column width={16}>
-                <Divider />
+              </Grid.Column>
+              <Grid.Column  width={14}>
+                <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
               </Grid.Column>
             </Grid.Row>
+            <Divider></Divider>
+            </Grid>
           )
         })}
-      </Grid>
+      </Container>
     )
   }
 
