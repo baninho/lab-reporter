@@ -69,19 +69,27 @@ export default class App extends Component<AppProps, AppState> {
 
   generateMenu() {
     return (
-      <Menu>
-        <Menu.Item name="home">
+      <Menu color="teal" inverted fixed="top" style={{ padding: "0em 11em"}}>
+        <Menu.Item name="home" as="a">
           <Link to="/">Home</Link>
         </Menu.Item>
 
         <Menu.Menu position="right">
-          <Menu.Item name="profile" onClick={this.handleEditProfile}>
-            Profil
-          </Menu.Item>
+          {this.profileButton()}
           {this.logInLogOutButton()}
         </Menu.Menu>
       </Menu>
     )
+  }
+
+  profileButton() {
+    if (this.props.auth.isAuthenticated()) { 
+      return(
+        <Menu.Item name="profile" onClick={this.handleEditProfile}>
+          Profil
+        </Menu.Item>
+      )
+    }
   }
 
   logInLogOutButton() {
