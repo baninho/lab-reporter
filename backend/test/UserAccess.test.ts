@@ -39,7 +39,7 @@ beforeAll(() => {
 
 test('Create new user', async () => {
   const response = await userAccess.createUser(testUser)
-  expect(response).toMatch(/.*userId.*/)
+  expect(response.userId).toMatch(testUser.userId)
 })
 
 test('Create and get user that was created', async () => {
