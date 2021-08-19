@@ -39,12 +39,22 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
+          - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
     events:
       - http:
           method: get
-          path: users/{userId}
-          cors: true
+          path: users
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - UserID
           authorizer: Auth
 
   GetEntries:
