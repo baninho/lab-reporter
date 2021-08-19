@@ -5,5 +5,13 @@ import { createDynamoDBClient } from "../utils/utils";
 const userAccess: UserAccess = new UserAccess(createDynamoDBClient())
 
 export async function getUserById(userId:string): Promise<User> {
-  return await userAccess.getUserById(userId)
+  const user: User = await userAccess.getUserById(userId)
+
+  if (user) return user
+  
+  return await createUser(new User(userId, '', []))
+}
+
+export async function createUser(user:User): Promise<User> {
+  return await userAccess.createUser(user)
 }
