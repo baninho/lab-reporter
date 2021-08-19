@@ -13,6 +13,8 @@ interface EntryKey {
 }
 
 export class EntryAccess {
+  // TODO: refactor to match UserAccess
+  // should accept database client object to facilitate testing
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly entriesTable = process.env.ENTRY_TABLE,
