@@ -34,6 +34,10 @@ export default class App extends Component<AppProps, AppState> {
     this.props.auth.logout()
   }
 
+  handleEditProfile() {
+
+  }
+
   render() {
     return (
       <div>
@@ -70,7 +74,12 @@ export default class App extends Component<AppProps, AppState> {
           <Link to="/">Home</Link>
         </Menu.Item>
 
-        <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
+        <Menu.Menu position="right">
+          <Menu.Item name="profile" onClick={this.handleEditProfile}>
+            Profil
+          </Menu.Item>
+          {this.logInLogOutButton()}
+        </Menu.Menu>
       </Menu>
     )
   }
