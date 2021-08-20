@@ -4,12 +4,12 @@ import { Group } from "../src/models/Group"
 var testGroup: Group
 
 beforeAll(() => {
-  process.env.GROUPS_TABLE = 'Groups-test' 
+  testGroup = new Group('testGroupId')
 })
 
 test('get groups from database', async () => {
-  testGroup = new Group('testGroupId')
+  process.env.GROUPS_TABLE = 'Groups-test' 
   await createGroup(testGroup)
   const groups = await getGroups()
-  expect(groups).toContain(testGroup)
+  expect(groups).toContainEqual(testGroup)
 })
