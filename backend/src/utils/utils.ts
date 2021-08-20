@@ -28,5 +28,19 @@ export function createDynamoDBClient() {
     })
   }
 
+  if (process.env.JEST_WORKER_ID) {
+    const isTest = process.env.JEST_WORKER_ID;
+    const config = {
+      convertEmptyValues: true,
+      ...(isTest && {
+        endpoint: 'localhost:8000',
+        sslEnabled: false,
+        region: 'local-env',
+      }),
+    };
+
+    return new AWS.DynamoDB.DocumentClient(config);
+  }
+
   return new XAWS.DynamoDB.DocumentClient()
 }
