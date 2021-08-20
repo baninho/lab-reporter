@@ -4,7 +4,7 @@ import { Group } from "../src/models/Group"
 var testGroup: Group
 
 beforeAll(() => {
-  testGroup = new Group('testGroupId')
+  testGroup = new Group('testGroupId', 'testGroupName')
 })
 
 test('get groups from database', async () => {
