@@ -20,7 +20,7 @@ beforeAll(() => {
     }),
   };
   
-  process.env.USER_TABLE = 'Users-test'
+  process.env.USERS_TABLE = 'Users-test'
   
   const ddb = new DocumentClient(config);
   
