@@ -32,6 +32,7 @@ interface EditEntryState {
   loadingEntries: boolean
   fileInputKey: string
   deleting: HashTable
+  title: string
 }
 
 export class EditEntry extends React.PureComponent<
@@ -45,7 +46,8 @@ EditEntryState
     entryBody: undefined,
     loadingEntries: true,
     fileInputKey: Date.now().toLocaleString(),
-    deleting: {}
+    deleting: {},
+    title: ''
   }
   
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +106,12 @@ EditEntryState
     }
   }
   
+  /**
+   * Update form using the update entry API
+   * 
+   * @param event submit event from form
+   * @returns nothing
+   */
   handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     
@@ -114,7 +122,7 @@ EditEntryState
       }
       
       const updatedEntry: UpdateEntryRequest = {
-        name: this.state.entry.name
+        name: this.state.title
       }
       
       if (this.state.entryBody)
@@ -169,6 +177,17 @@ EditEntryState
       this.props.history.push(`/`)
     }
   }
+
+  /**
+   * Change handler for title field
+   */
+  handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const title = event.target.value
+    
+    this.setState({
+      title
+    })
+  }
   
   async componentDidMount() {
     const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
@@ -179,7 +198,8 @@ EditEntryState
       entry,
       entryBody: entry.body,
       loadingEntries: false,
-      deleting
+      deleting,
+      title: entry.name
     })
   }
   
@@ -189,6 +209,13 @@ EditEntryState
         <h2>Eintrag bearbeiten</h2>
         <h1>{this.state.entry.name}</h1>
         <Form onSubmit={this.handleSubmit}>
+          <Form.Input 
+          label="Titel"
+          value={this.state.title}
+          width={8}
+          placeholder="Neuer Eintrag"
+          onChange={this.handleNameChange}
+          />
           <Form.TextArea
           label="Eintrag"
           rows={10}
