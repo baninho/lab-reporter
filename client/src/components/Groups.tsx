@@ -1,13 +1,9 @@
 import { History } from 'history'
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import {
-  Button,
   Divider,
   Grid,
-  Icon,
   Input,
-  Image,
   Loader,
   Container
 } from 'semantic-ui-react'
