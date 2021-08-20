@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
-import { Container, Grid, Menu, Segment } from 'semantic-ui-react'
+import { Container, Grid, Menu, Segment, Image } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
 import { EditEntry } from './components/EditEntry'
@@ -50,7 +50,7 @@ export default class App extends Component<AppProps, AppState> {
             }
             `}
           </style>
-          <Segment style={{ padding: '6em 0em' }} vertical>
+          <Segment style={{ padding: '7em 0em' }} vertical>
             <Grid container stackable verticalAlign="middle">
               <Grid.Row>
                 <Grid.Column width={16}>
@@ -70,6 +70,9 @@ export default class App extends Component<AppProps, AppState> {
   generateMenu() {
     return (
       <Menu color="teal" inverted fixed="top" style={{ padding: "0em 10em"}} size="huge">
+        <Menu.Item>
+          <Image size="mini" src='/LOGO_MushRoom_farbirg-weiß-scaled.png' />
+        </Menu.Item>
         <Menu.Item header>Laborbuch</Menu.Item>
         <Menu.Item name="home" as="a">
           <Link to="/">Home</Link>
