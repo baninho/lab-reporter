@@ -36,6 +36,20 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
+  CreateEntry:
+    handler: src/lambda/http/createGroup.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
+    events:
+      - http:
+          method: post
+          path: groups
+          cors: true
+          authorizer: Auth
+
   GetGroups:
     handler: src/lambda/http/getGroups.handler
     iamRoleStatements:
