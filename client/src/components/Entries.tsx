@@ -45,10 +45,8 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
   onEntryCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
       const newEntry = await createEntry(this.props.auth.getIdToken(), {
-        name: this.state.newEntryName,
-        dueDate
+        name: this.state.newEntryName
       })
       this.setState({
         entries: [newEntry, ...this.state.entries],
@@ -191,12 +189,5 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         })}
       </Container>
     )
-  }
-
-  calculateDueDate(): string {
-    const date = new Date()
-    date.setDate(date.getDate() + 7)
-
-    return dateFormat(date, 'yyyy-mm-dd') as string
   }
 }
