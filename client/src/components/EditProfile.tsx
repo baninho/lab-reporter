@@ -66,7 +66,8 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
       const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
       this.setState({
         user,
-        loading: false
+        loading: false,
+        name: user.name
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
