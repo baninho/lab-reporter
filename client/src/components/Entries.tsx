@@ -90,10 +90,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
   render() {
     return (
       <div>
-        <Header as="h1">Laborbuch</Header>
-
         {this.renderCreateEntryInput()}
-
         {this.renderEntries()}
       </div>
     )

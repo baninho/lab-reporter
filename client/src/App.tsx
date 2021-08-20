@@ -69,7 +69,8 @@ export default class App extends Component<AppProps, AppState> {
 
   generateMenu() {
     return (
-      <Menu color="teal" inverted fixed="top" style={{ padding: "0em 11em"}}>
+      <Menu color="teal" inverted fixed="top" style={{ padding: "0em 10em"}} size="huge">
+        <Menu.Item header>Laborbuch</Menu.Item>
         <Menu.Item name="home" as="a">
           <Link to="/">Home</Link>
         </Menu.Item>
