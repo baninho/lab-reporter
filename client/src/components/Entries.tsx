@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat'
 import { History } from 'history'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
