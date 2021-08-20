@@ -40,6 +40,9 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
 
   onGroupCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
+      this.setState({
+        loadingGroups: true
+      })
       const newGroup = await createGroup(this.props.auth.getIdToken(), this.state.newGroupName)
       this.setState({
         groups: [newGroup, ...this.state.groups],
@@ -47,6 +50,10 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
       })
     } catch(e) {
       alert('Group creation failed: ' + e.message)
+    } finally {
+      this.setState({
+        loadingGroups: false
+      })
     }
   }
 
