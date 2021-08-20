@@ -186,43 +186,43 @@ EditEntryState
   renderEdit() {
     return (
       <div>
-      <h2>Eintrag bearbeiten</h2>
-      <h1>{this.state.entry.name}</h1>
-      <Form onSubmit={this.handleSubmit}>
-      <Form.TextArea
-      label="Eintrag"
-      rows={10}
-      placeholder={this.state.entry.body ? this.state.entry.body : 'Eintrag hier verfassen'}
-      value={this.state.entryBody ? this.state.entryBody : ''}
-      onChange={this.handleBodyChange}
-      />
-      {this.state.entry.attachments[0] && this.state.entry.attachments[0].attachmentUrl && <b>Dateien</b>}
-      {this.state.entry.attachments[0] && this.state.entry.attachments[0].attachmentUrl ? this.renderFiles() : ''}
-      <Grid>
-      <Grid.Row>
-      <Grid.Column width={14}>
-      <Form.Field>
-      <label>Datei anfügen</label>
-      <input
-      type="file"
-      accept="image/*"
-      placeholder="Image to upload"
-      onChange={this.handleFileChange}
-      key={this.state.fileInputKey}
-      />
-      </Form.Field>
-      </Grid.Column>
-      <Grid.Column width={2} verticalAlign="bottom">
-      {this.renderUploadbutton()}
-      </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-      <Grid.Column>
-      {this.renderSubmitButton()}
-      </Grid.Column>
-      </Grid.Row>
-      </Grid>
-      </Form>
+        <h2>Eintrag bearbeiten</h2>
+        <h1>{this.state.entry.name}</h1>
+        <Form onSubmit={this.handleSubmit}>
+          <Form.TextArea
+          label="Eintrag"
+          rows={10}
+          placeholder={this.state.entry.body ? this.state.entry.body : 'Eintrag hier verfassen'}
+          value={this.state.entryBody ? this.state.entryBody : ''}
+          onChange={this.handleBodyChange}
+          />
+          {this.state.entry.attachments[0] && this.state.entry.attachments[0].attachmentUrl && <b>Dateien</b>}
+          {this.state.entry.attachments[0] && this.state.entry.attachments[0].attachmentUrl ? this.renderFiles() : ''}
+          <Grid>
+            <Grid.Row>
+              <Grid.Column width={14}>
+                <Form.Field>
+                  <label>Datei anfügen</label>
+                  <input
+                  type="file"
+                  accept="image/*"
+                  placeholder="Image to upload"
+                  onChange={this.handleFileChange}
+                  key={this.state.fileInputKey}
+                  />
+                </Form.Field>
+              </Grid.Column>
+              <Grid.Column width={2} verticalAlign="bottom">
+                {this.renderUploadbutton()}
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column>
+                {this.renderSubmitButton()}
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Form>
       </div>
     )
   }

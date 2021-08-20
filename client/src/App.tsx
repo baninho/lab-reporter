@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Container, Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
 import { EditEntry } from './components/EditEntry'
@@ -8,6 +8,7 @@ import { EntryDetail } from './components/EntryDetail'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Entries } from './components/Entries'
+import { EditProfile } from './components/EditProfile'
 
 export interface AppProps {}
 
@@ -34,36 +35,62 @@ export default class App extends Component<AppProps, AppState> {
     this.props.auth.logout()
   }
 
+  handleEditProfile() {
+
+  }
+
   render() {
     return (
       <div>
-        <Segment style={{ padding: '4em 0em' }} vertical>
-          <Grid container stackable verticalAlign="middle">
-            <Grid.Row>
-              <Grid.Column width={16}>
-                <Router history={this.props.history}>
-                  {this.generateMenu()}
-
-                  {this.generateCurrentPage()}
-                </Router>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
+        <Container>
+          <style>
+            {`
+            html, body {
+              background-color: beige;
+            }
+            `}
+          </style>
+          <Segment style={{ padding: '4em 0em' }} vertical>
+            <Grid container stackable verticalAlign="middle">
+              <Grid.Row>
+                <Grid.Column width={16}>
+                  <Router history={this.props.history}>
+                    {this.generateMenu()}
+                    {this.generateCurrentPage()}
+                  </Router>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        </Container>
       </div>
     )
   }
 
   generateMenu() {
     return (
-      <Menu>
-        <Menu.Item name="home">
+      <Menu color="teal" inverted fixed="top" style={{ padding: "0em 10em"}} size="huge">
+        <Menu.Item header>Laborbuch</Menu.Item>
+        <Menu.Item name="home" as="a">
           <Link to="/">Home</Link>
         </Menu.Item>
 
-        <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
+        <Menu.Menu position="right">
+          {this.profileButton()}
+          {this.logInLogOutButton()}
+        </Menu.Menu>
       </Menu>
     )
+  }
+
+  profileButton() {
+    if (this.props.auth.isAuthenticated()) { 
+      return(
+        <Menu.Item name="profile" as="a">
+          <Link to="/profile">Profil</Link>
+        </Menu.Item>
+      )
+    }
   }
 
   logInLogOutButton() {
@@ -110,6 +137,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <EntryDetail {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/profile"
+          exact
+          render={props => {
+            return <EditProfile {...props} auth={this.props.auth} />
           }}
         />
 

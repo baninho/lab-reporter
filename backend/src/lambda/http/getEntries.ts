@@ -1,10 +1,10 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 
-import { getUserId } from '../utils'
+import { getUserId } from '../../utils/utils'
 import { getEntriesByUser } from '../../main/entries'
 import { createLogger } from '../../utils/logger'
 

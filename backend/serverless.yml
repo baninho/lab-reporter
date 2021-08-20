@@ -4,8 +4,9 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
 
-# package:
-#   individually: true
+package:
+  patterns:
+    - '!test/**'
 
 provider:
   name: aws
@@ -16,6 +17,7 @@ provider:
 
   environment:
     ENTRY_TABLE: Entries-${self:provider.stage}
+    USERS_TABLE: Users-${self:provider.stage}
     ATTACHMENTS_BUCKET: lab-attachments-209405735061-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     ENTRY_ID_INDEX: EntryIdIndex
@@ -30,6 +32,44 @@ custom:
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
+
+  GetUserById:
+    handler: src/lambda/http/getUserById.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+    events:
+      - http:
+          method: get
+          path: users
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - UserID
+          authorizer: Auth
+
+  UpdateUser:
+    handler: src/lambda/http/updateUser.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+    events:
+      - http:
+          method: patch
+          path: users
+          cors: true
+          authorizer: Auth
 
   GetEntries:
     handler: src/lambda/http/getEntries.handler
@@ -184,7 +224,18 @@ resources:
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-  
+    UsersDynamoDBTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.USERS_TABLE}
+
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:

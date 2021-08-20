@@ -1,11 +1,11 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 
 import { UpdateEntryRequest } from '../../requests/UpdateEntryRequest'
-import { getUserId } from '../utils'
+import { getUserId } from '../../utils/utils'
 import { createLogger } from '../../utils/logger'
 import { updateEntry } from '../../main/entries'
 
@@ -17,9 +17,10 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const userId = getUserId(event)
   const updatedEntry: UpdateEntryRequest = JSON.parse(event.body)
 
-  logger.info(`update todo ${entryId}`)
+  logger.info(`update entry ${entryId}`)
+  logger.info(`update content ${JSON.stringify(updatedEntry)}`)
 
-  updateEntry(updatedEntry, entryId, userId)
+  await updateEntry(updatedEntry, entryId, userId)
 
   return {
     statusCode: 200,

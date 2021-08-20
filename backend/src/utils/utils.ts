@@ -1,5 +1,9 @@
+import * as AWS  from 'aws-sdk'
+import * as AWSXRay  from 'aws-xray-sdk'
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { parseUserId } from "../auth/utils";
+
+const XAWS = AWSXRay.captureAWS(AWS)
 
 /**
  * Get a user id from an API Gateway event
@@ -13,4 +17,16 @@ export function getUserId(event: APIGatewayProxyEvent): string {
   const jwtToken = split[1]
 
   return parseUserId(jwtToken)
+}
+
+export function createDynamoDBClient() {
+  if (process.env.IS_OFFLINE) {
+    console.log('Creating a local DynamoDB instance')
+    return new AWS.DynamoDB.DocumentClient({
+      region: 'localhost',
+      endpoint: 'http://localhost:8000'
+    })
+  }
+
+  return new XAWS.DynamoDB.DocumentClient()
 }
