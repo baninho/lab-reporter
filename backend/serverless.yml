@@ -36,7 +36,7 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  CreateEntry:
+  CreateGroup:
     handler: src/lambda/http/createGroup.handler
     iamRoleStatements:
       - Effect: Allow
