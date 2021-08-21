@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Button, Grid, Loader, SegmentGroup, Segment, Icon } from 'semantic-ui-react'
+import { Form, Button, Grid, Loader, SegmentGroup, Segment, Icon, Container } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { deleteAttachment, deleteEntry, getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entries-api'
 import { Entry } from '../types/Entry'
@@ -205,7 +205,7 @@ EditEntryState
   
   renderEdit() {
     return (
-      <div>
+      <Container style={{ padding: '4em 0em' }}>
         <h2>Eintrag bearbeiten</h2>
         <h1>{this.state.entry.name}</h1>
         <Form onSubmit={this.handleSubmit}>
@@ -250,13 +250,13 @@ EditEntryState
             </Grid.Row>
           </Grid>
         </Form>
-      </div>
+      </Container>
     )
   }
 
   renderLoading() {
     return (
-      <Grid.Row>
+      <Grid.Row style={{ padding: '4em 0em' }}>
       <Loader indeterminate active inline="centered">
       Lade Eintrag
       </Loader>
