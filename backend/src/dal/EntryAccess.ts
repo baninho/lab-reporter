@@ -65,18 +65,11 @@ export class EntryAccess {
   }
 
   async updateEntry(updatedEntry: UpdateEntryRequest, entryId: string, userId: string) {
-    const entry: EntryItem = await this.getEntryById(entryId)
+    const entry = await this.getEntryById(entryId)
     const key = {
       createdAt: entry.createdAt,
       groupId: userId // TODO: implement groups
     }
-    const updateOperations = ['set #N = :n, attachments=:a, body=:b']
-    const exprAttrVals = {
-      ':n':updatedEntry.name,
-      ':a':entry.attachments,
-      ':b':updatedEntry.entryBody
-    }
-    
     
     if (updatedEntry.addAttachment) {
       entry.attachments.push(updatedEntry.addAttachment)
@@ -84,23 +77,17 @@ export class EntryAccess {
       entry.attachments = entry.attachments.filter((att) => {return att.key !== updatedEntry.delKey})
     }
 
-    if (updatedEntry.updateGroupId) {
-      updateOperations.push('groupId=:g')
-      exprAttrVals[':g'] = updatedEntry.updateGroupId
-    }
-
-    const updateExpr = updateOperations.join(',')
-    console.log(updateExpr)
-    console.log(Object.keys(exprAttrVals))
-    console.log(exprAttrVals[Object.keys(exprAttrVals)[Object.keys(exprAttrVals).length-1]])
-
     try {
       await this.docClient.update({
         TableName: this.entriesTable,
         Key: key,
         ExpressionAttributeNames: { '#N': 'name' },
-        UpdateExpression: updateExpr,
-        ExpressionAttributeValues: exprAttrVals,
+        UpdateExpression: `set #N = :n, attachments=:a${updatedEntry.entryBody ? ', body=:b' : ''}`,
+        ExpressionAttributeValues:{
+          ':n':updatedEntry.name,
+          ':a':entry.attachments,
+          ':b':updatedEntry.entryBody
+        },
         ReturnValues:'UPDATED_NEW'
       }).promise()
     } catch (e) {
