@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Button, Grid, Loader, SegmentGroup, Segment, Icon, Container } from 'semantic-ui-react'
+import { Form, Button, Grid, Loader, SegmentGroup, Segment, Icon, Container, Dropdown, DropdownProps } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { deleteAttachment, deleteEntry, getEntryById, getUploadUrl, patchEntry, uploadFile } from '../api/entries-api'
 import { Entry } from '../types/Entry'
@@ -7,6 +7,8 @@ import { UpdateEntryRequest } from '../types/UpdateEntryRequest'
 import { History } from 'history'
 import { Attachment } from '../types/Attachment'
 import { HashTable } from '../types/HashTable'
+import { Group } from '../types/Group'
+import { getGroups } from '../api/groups-api'
 
 enum UploadState {
   NoUpload,
@@ -33,6 +35,8 @@ interface EditEntryState {
   fileInputKey: string
   deleting: HashTable
   title: string
+  groups: Group[]
+  groupId: string
 }
 
 export class EditEntry extends React.PureComponent<
@@ -47,7 +51,9 @@ EditEntryState
     loadingEntries: true,
     fileInputKey: Date.now().toLocaleString(),
     deleting: {},
-    title: ''
+    title: '',
+    groups: [],
+    groupId: ''
   }
   
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +94,7 @@ EditEntryState
       
       const updatedEntry: UpdateEntryRequest = {
         name: this.state.entry.name,
+        groupId: this.state.entry.groupId,
         addAttachment: attachment
       }
       
@@ -122,7 +129,9 @@ EditEntryState
       }
       
       const updatedEntry: UpdateEntryRequest = {
-        name: this.state.title
+        name: this.state.title,
+        groupId: this.state.entry.groupId,
+        updateGroupId: this.state.groupId
       }
       
       if (this.state.entryBody)
@@ -188,9 +197,21 @@ EditEntryState
       title
     })
   }
+
+  /**
+   * Change handler for group dropdown
+   */
+   handleGroupChange = (event: React.SyntheticEvent, data: DropdownProps) => {
+    const groupId: string = data.value as string
+    
+    this.setState({
+      groupId
+    })
+  }
   
   async componentDidMount() {
     const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
+    const groups: Group[] = await getGroups(this.props.auth.getIdToken())
     const deleting: HashTable = {}
     entry.attachments.forEach((att) => {deleting[att.key] = false})
     
@@ -199,16 +220,26 @@ EditEntryState
       entryBody: entry.body,
       loadingEntries: false,
       deleting,
-      title: entry.name
+      title: entry.name,
+      groups,
+      groupId: entry.groupId
     })
   }
   
   renderEdit() {
+    const groupsDropdown = this.state.groups.map((group) => {
+      return {
+        key: group.groupId,
+        text: group.name,
+        value: group.groupId
+      }
+    })
     return (
       <Container style={{ padding: '4em 0em' }}>
         <h2>Eintrag bearbeiten</h2>
         <h1>{this.state.entry.name}</h1>
         <Form onSubmit={this.handleSubmit}>
+          <Form.Group>
           <Form.Input 
           label="Titel"
           value={this.state.title}
@@ -216,6 +247,17 @@ EditEntryState
           placeholder="Neuer Eintrag"
           onChange={this.handleNameChange}
           />
+          <Form.Input label="Projekt" width={6}>
+            <Dropdown
+            placeholder="Projekt auswählen"
+            fluid
+            selection
+            options={groupsDropdown}
+            onChange={this.handleGroupChange}
+            defaultValue={this.state.entry.groupId}
+            />
+          </Form.Input>
+          </Form.Group>
           <Form.TextArea
           label="Eintrag"
           rows={10}

@@ -46,6 +46,7 @@ export async function deleteAttachment(entryId: string, key: string, userId: str
   const entry: EntryItem = await entryAccess.getEntryById(entryId)
   const updatedEntry: UpdateEntryRequest = {
     name: entry.name,
+    groupId: entry.groupId,
     delKey: key
   }
 
