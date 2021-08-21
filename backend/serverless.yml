@@ -8,8 +8,6 @@ package:
   patterns:
     - '!test/**'
 
-useDotenv: false
-
 provider:
   name: aws
   runtime: nodejs14.x
@@ -31,6 +29,9 @@ provider:
 
 custom:
   topicName: attachmentTopic
+  dotenv:
+    exclude:
+      - GROUPS_TABLE
 
 functions:
   Auth:
