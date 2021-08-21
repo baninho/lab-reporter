@@ -25,12 +25,12 @@ export class EntryAccess {
     }).promise()
   }
 
-  async getEntriesByUser(userId: string): Promise<EntryItem[]> {
+  async getEntriesByGroup(groupId: string): Promise<EntryItem[]> {
     const result = await this.docClient.query({
       TableName: this.entriesTable,
       KeyConditionExpression: 'groupId = :groupId',
       ExpressionAttributeValues: {
-        ':groupId': userId // TODO: use groupId
+        ':groupId': groupId
       },
       ScanIndexForward: false
     }).promise()
