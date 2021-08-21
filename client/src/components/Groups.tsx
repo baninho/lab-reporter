@@ -87,10 +87,10 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
 
   render() {
     return (
-      <div>
+      <Grid>
         {this.renderCreateGroupInput()}
         {this.renderGroups()}
-      </div>
+      </Grid>
     )
   }
 
@@ -140,18 +140,16 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
 
   renderGroupsList() {
     return (
-      <Container>
+      <Grid>
         {this.state.groups.map((group) => {
           return (
-            <Grid key={group.groupId}>
-              <Grid.Column width={16}>
-                <h2>{group.name}</h2>
-                <Divider />
-              </Grid.Column>
-            </Grid>
+            <Grid.Column width={16} key={group.groupId}>
+              <h2>{group.name}</h2>
+              <Divider />
+            </Grid.Column>
           )
         })}
-      </Container>
+      </Grid>
     )
   }
 }

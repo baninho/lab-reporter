@@ -89,10 +89,10 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
   render() {
     return (
-      <div>
+      <Grid>
         {this.renderCreateEntryInput()}
         {this.renderEntries()}
-      </div>
+      </Grid>
     )
   }
 
