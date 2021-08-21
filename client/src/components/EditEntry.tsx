@@ -67,7 +67,6 @@ EditEntryState
   
   handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const entryBody = event.target.value
-    if (!entryBody) return
     
     this.setState({
       entryBody: entryBody

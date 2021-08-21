@@ -1,7 +1,6 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { getUserId } from '../../utils/utils'
 import middy from '@middy/core'
 import cors from '@middy/http-cors'
 import { createLogger } from '../../utils/logger'
@@ -14,11 +13,10 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   // Remove an Attachment by key
   const key = event.pathParameters.key
   const entryId = event.pathParameters.entryId
-  const userId = getUserId(event)
 
   logger.info(`delete attachment: ${key}, entryId: ${entryId}`)
 
-  await deleteAttachment(entryId, `${entryId}/${key}`, userId)
+  await deleteAttachment(entryId, `${entryId}/${key}`)
   await deleteObject(`${entryId}/${key}`)
 
   return {

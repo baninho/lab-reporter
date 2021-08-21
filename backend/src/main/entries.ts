@@ -38,11 +38,11 @@ export async function deleteEntry(entryId: string, userId: string) {
   await entryAccess.deleteEntry(entryId, userId)
 }
 
-export async function updateEntry(updatedEntry: UpdateEntryRequest, entryId: string, userId: string) {
-  await entryAccess.updateEntry(updatedEntry, entryId, userId)
+export async function updateEntry(updatedEntry: UpdateEntryRequest, entryId: string) {
+  await entryAccess.updateEntry(updatedEntry, entryId)
 }
 
-export async function deleteAttachment(entryId: string, key: string, userId: string) {
+export async function deleteAttachment(entryId: string, key: string) {
   const entry: EntryItem = await entryAccess.getEntryById(entryId)
   const updatedEntry: UpdateEntryRequest = {
     name: entry.name,
@@ -50,5 +50,5 @@ export async function deleteAttachment(entryId: string, key: string, userId: str
     delKey: key
   }
 
-  updateEntry(updatedEntry, entryId, userId)
+  updateEntry(updatedEntry, entryId)
 }
