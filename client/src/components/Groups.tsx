@@ -9,8 +9,10 @@ import {
 } from 'semantic-ui-react'
 
 import { createGroup, getGroups } from '../api/groups-api'
+import { updateUser } from '../api/users-api'
 import Auth from '../auth/Auth'
 import { Group } from '../types/Group'
+import { parseUserId } from '../util/utils'
 
 interface GroupsProps {
   auth: Auth
@@ -47,6 +49,10 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
       this.setState({
         groups: [newGroup, ...this.state.groups],
         newGroupName: ''
+      })
+      await updateUser(this.props.auth.getIdToken(), {
+        userId: parseUserId(this.props.auth.idToken),
+        newGroups: [newGroup.groupId]
       })
     } catch(e) {
       alert('Group creation failed: ' + e.message)
