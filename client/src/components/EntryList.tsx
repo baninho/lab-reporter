@@ -22,8 +22,8 @@ export class EntryList extends React.PureComponent<EntryListProps, EntryListStat
       {this.props.entries.map((entry, pos) => {
         const group = this.props.groups.find((g) => {return g.groupId === entry.groupId})
         return (
-          <Grid>
-          <Grid.Row key={entry.entryId}>
+          <Grid key={entry.entryId}>
+          <Grid.Row>
             <Grid.Column width={7} verticalAlign="middle">
               <Link to={`/entries/${entry.entryId}`}><h3>{entry.name}</h3></Link>
             </Grid.Column>
