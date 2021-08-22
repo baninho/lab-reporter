@@ -7,6 +7,7 @@ import cors from '@middy/http-cors'
 import { createLogger } from '../../utils/logger'
 import { updateUser } from '../../main/users'
 import { UpdateUserRequest } from '../../requests/UpdateUserRequest'
+import { getUserId } from '../../utils/utils'
 
 const logger = createLogger('updateUser')
 
@@ -19,7 +20,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   logger.info(`update user ${userUpdate.userId}`)
   logger.info(`update content ${JSON.stringify(userUpdate)}`)
 
-  await updateUser(userUpdate)
+  await updateUser(userUpdate, getUserId(event))
 
   return {
     statusCode: 200,
