@@ -12,4 +12,4 @@ Users can create projects to group entries by and share entries across the proje
 
 ## Running the Project
 To run the local client:
-    cd client && yarn start-dev
+``` cd client && yarn start-dev ```
