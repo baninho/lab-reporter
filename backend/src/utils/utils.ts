@@ -3,8 +3,6 @@ import * as AWSXRay  from 'aws-xray-sdk'
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { parseUserId } from "../auth/utils";
 
-const XAWS = AWSXRay.captureAWS(AWS)
-
 /**
  * Get a user id from an API Gateway event
  * @param event an event from API Gateway
@@ -28,5 +26,21 @@ export function createDynamoDBClient() {
     })
   }
 
+  if (process.env.JEST_WORKER_ID) {
+    console.log('Creating local DynamoDB for Jest')
+    const isTest = process.env.JEST_WORKER_ID;
+    const config = {
+      convertEmptyValues: true,
+      ...(isTest && {
+        endpoint: 'localhost:8000',
+        sslEnabled: false,
+        region: 'local-env',
+      }),
+    };
+
+    return new AWS.DynamoDB.DocumentClient(config);
+  }
+
+  const XAWS = AWSXRay.captureAWS(AWS)
   return new XAWS.DynamoDB.DocumentClient()
 }

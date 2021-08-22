@@ -25,12 +25,12 @@ export class EntryAccess {
     }).promise()
   }
 
-  async getEntriesByUser(userId: string): Promise<EntryItem[]> {
+  async getEntriesByGroup(groupId: string): Promise<EntryItem[]> {
     const result = await this.docClient.query({
       TableName: this.entriesTable,
       KeyConditionExpression: 'groupId = :groupId',
       ExpressionAttributeValues: {
-        ':groupId': userId // TODO: use groupId
+        ':groupId': groupId
       },
       ScanIndexForward: false
     }).promise()
@@ -64,17 +64,28 @@ export class EntryAccess {
     await this.docClient.delete(params).promise()
   }
 
-  async updateEntry(updatedEntry: UpdateEntryRequest, entryId: string, userId: string) {
+  async updateEntry(updatedEntry: UpdateEntryRequest, entryId: string) {
+    // TODO: clean up this hack
     const entry = await this.getEntryById(entryId)
     const key = {
       createdAt: entry.createdAt,
-      groupId: userId // TODO: implement groups
+      groupId: updatedEntry.groupId
     }
     
     if (updatedEntry.addAttachment) {
       entry.attachments.push(updatedEntry.addAttachment)
     } else if (updatedEntry.delKey) {
       entry.attachments = entry.attachments.filter((att) => {return att.key !== updatedEntry.delKey})
+    }
+
+    if (updatedEntry.updateGroupId && updatedEntry.updateGroupId != entry.groupId) {
+      entry.groupId = updatedEntry.updateGroupId
+      entry.body = updatedEntry.entryBody
+
+      await this.createEntry(entry)
+      await this.deleteEntry(entry.entryId, entry.userId)
+
+      return
     }
 
     try {

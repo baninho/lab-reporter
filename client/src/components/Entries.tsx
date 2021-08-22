@@ -13,8 +13,10 @@ import {
 } from 'semantic-ui-react'
 
 import { createEntry, deleteEntry, getEntries } from '../api/entries-api'
+import { getGroups } from '../api/groups-api'
 import Auth from '../auth/Auth'
 import { Entry } from '../types/Entry'
+import { Group } from '../types/Group'
 
 interface EntriesProps {
   auth: Auth
@@ -25,13 +27,15 @@ interface EntriesState {
   entries: Entry[]
   newEntryName: string
   loadingEntries: boolean
+  groups: Group[]
 }
 
 export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
   state: EntriesState = {
     entries: [],
     newEntryName: '',
-    loadingEntries: true
+    loadingEntries: true,
+    groups: []
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,9 +82,11 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
   async componentDidMount() {
     try {
       const entries = await getEntries(this.props.auth.getIdToken())
+      const groups = await getGroups(this.props.auth.getIdToken())
       this.setState({
         entries,
-        loadingEntries: false
+        loadingEntries: false,
+        groups
       })
     } catch (e) {
       alert(`Failed to fetch entries: ${e.message}`)
@@ -89,10 +95,10 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
   render() {
     return (
-      <div>
+      <Grid>
         {this.renderCreateEntryInput()}
         {this.renderEntries()}
-      </div>
+      </Grid>
     )
   }
 
@@ -144,11 +150,15 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
     return (
       <Container>
         {this.state.entries.map((entry, pos) => {
+          const group = this.state.groups.find((g) => {return g.groupId === entry.groupId})
           return (
             <Grid>
             <Grid.Row key={entry.entryId}>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={7} verticalAlign="middle">
                 <Link to={`/entries/${entry.entryId}`}><h3>{entry.name}</h3></Link>
+              </Grid.Column>
+              <Grid.Column width={4}>
+                {group ? group.name : ''}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
                 {entry.createdAt}

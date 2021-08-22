@@ -15,7 +15,8 @@
     "react-scripts": "4.0.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/dateformat": "^3.0.0",
@@ -26,6 +27,7 @@
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "^4.3.4",
     "@types/styled-components": "^4.1.18",
+    "@types/uuid": "^8.3.1",
     "auth0-js": "^9.11.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",

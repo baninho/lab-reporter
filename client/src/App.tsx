@@ -9,6 +9,7 @@ import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Entries } from './components/Entries'
 import { EditProfile } from './components/EditProfile'
+import { Groups } from './components/Groups'
 
 export interface AppProps {}
 
@@ -50,7 +51,7 @@ export default class App extends Component<AppProps, AppState> {
             }
             `}
           </style>
-          <Segment style={{ padding: '7em 0em' }} vertical>
+          <Segment style={{ padding: '4em 0em' }} vertical>
             <Grid container stackable verticalAlign="middle">
               <Grid.Row>
                 <Grid.Column width={16}>
@@ -76,6 +77,9 @@ export default class App extends Component<AppProps, AppState> {
         <Menu.Item header>Laborbuch</Menu.Item>
         <Menu.Item name="home" as="a">
           <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item name="home" as="a">
+          <Link to="/groups">Projekte</Link>
         </Menu.Item>
 
         <Menu.Menu position="right">
@@ -148,6 +152,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <EditProfile {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/groups"
+          exact
+          render={props => {
+            return <Groups {...props} auth={this.props.auth} />
           }}
         />
 

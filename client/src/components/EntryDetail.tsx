@@ -2,7 +2,7 @@ import * as React from 'react'
 import Auth from '../auth/Auth'
 import { deleteEntry, getEntryById } from '../api/entries-api'
 import { Entry } from '../types/Entry'
-import { Button, Grid, Header, Icon, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
+import { Button, Container, Grid, Header, Icon, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
 import { History } from 'history'
 
 interface EntryDetailProps {
@@ -62,7 +62,7 @@ export class EntryDetail extends React.PureComponent<
 
   renderEntry() {
     return (
-      <div>
+      <Container style={{ padding: '4em 0em' }}>
         <Grid>
           <Grid.Column width={14}>
             <Header as="h1">{this.state.entry.name}</Header>
@@ -103,13 +103,13 @@ export class EntryDetail extends React.PureComponent<
             </SegmentGroup>
           </Grid.Row>
         </Grid>
-      </div>
+      </Container>
     )
   }
 
   renderLoading() {
     return (
-      <Grid.Row>
+      <Grid.Row style={{ padding: '4em 0em' }}>
         <Loader indeterminate active inline="centered">
           Lade Eintrag
         </Loader>

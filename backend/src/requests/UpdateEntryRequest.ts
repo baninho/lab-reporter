@@ -5,7 +5,9 @@ import { Attachment } from "../models/Attachment";
  */
  export interface UpdateEntryRequest {
   name: string
+  groupId: string
   addAttachment?: Attachment
   entryBody?: string
   delKey?: string
+  updateGroupId?: string
 }

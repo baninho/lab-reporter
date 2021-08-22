@@ -18,6 +18,7 @@ provider:
   environment:
     ENTRY_TABLE: Entries-${self:provider.stage}
     USERS_TABLE: Users-${self:provider.stage}
+    GROUPS_TABLE: Groups-${self:provider.stage}
     ATTACHMENTS_BUCKET: lab-attachments-209405735061-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     ENTRY_ID_INDEX: EntryIdIndex
@@ -28,10 +29,42 @@ provider:
 
 custom:
   topicName: attachmentTopic
+  dotenv:
+    exclude:
+      - GROUPS_TABLE
 
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
+
+  CreateGroup:
+    handler: src/lambda/http/createGroup.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
+    events:
+      - http:
+          method: post
+          path: groups
+          cors: true
+          authorizer: Auth
+
+  GetGroups:
+    handler: src/lambda/http/getGroups.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
+    events:
+      - http:
+          method: get
+          path: groups
+          cors: true
+          authorizer: Auth
 
   GetUserById:
     handler: src/lambda/http/getUserById.handler
@@ -78,6 +111,11 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ENTRY_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
     events:
       - http:
           method: get
@@ -126,6 +164,8 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
+          - dynamodb:PutItem
+          - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ENTRY_TABLE}
       - Effect: Allow
         Action:
@@ -235,6 +275,17 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.USERS_TABLE}
+    GroupsDynamoDBTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: groupId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: groupId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.GROUPS_TABLE}
 
     AttachmentsBucket:
       Type: AWS::S3::Bucket

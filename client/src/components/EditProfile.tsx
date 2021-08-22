@@ -105,11 +105,17 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
       )
   }
   
-  render() {
+  renderProfile() {
     if (this.state.loading) {
       return this.renderLoading()
     }
     
     return this.renderProfileEdit()
+  }
+
+  render() {
+    return (
+      <Grid>{this.renderProfile()}</Grid>
+    )
   }
 }
