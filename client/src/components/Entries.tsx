@@ -55,9 +55,9 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
     })
     var entries = await getEntries(this.props.auth.getIdToken())
 
-    if (groupId != 'all') {
+    if (groupId !== 'all') {
       entries = entries.filter((entry) => {
-        return entry.groupId == groupId
+        return entry.groupId === groupId
       })
     }
     
