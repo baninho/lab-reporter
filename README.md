@@ -9,3 +9,7 @@ Users can create, edit and delete log entries. Only the author of an entry may e
 
 ### Projects
 Users can create projects to group entries by and share entries across the project team. Projects are linked to entries by tagging an entry with a project tag. Every project team member can view all entries that are tagged with that project.
+
+## Running the Project
+To run the local client:
+``` cd client && yarn start-dev ```
