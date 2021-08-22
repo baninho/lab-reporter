@@ -18,7 +18,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   logger.info(`delete entry: ${entryId}, userId: ${userId}`)
 
   await deleteAllObjects(entryId)
-  await deleteEntry(entryId, userId)
+  await deleteEntry(entryId)
 
   return {
     statusCode: 200,

@@ -48,8 +48,8 @@ export async function getEntryById(entryId:string): Promise<EntryItem> {
   return await entryAccess.getEntryById(entryId)
 }
 
-export async function deleteEntry(entryId: string, userId: string) {
-  await entryAccess.deleteEntry(entryId, userId)
+export async function deleteEntry(entryId: string) {
+  await entryAccess.deleteEntry(entryId)
 }
 
 export async function updateEntry(updatedEntry: UpdateEntryRequest, entryId: string) {

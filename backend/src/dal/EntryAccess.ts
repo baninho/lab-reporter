@@ -51,10 +51,13 @@ export class EntryAccess {
     return result.Items[0] as EntryItem
   }
 
-  async deleteEntry(entryId: string, userId: string) {
-    const key = await this.getEntryKeyById(entryId)
+  async deleteEntry(entryId: string) {
+    const entry = await this.getEntryById(entryId)
     
-    key.groupId = userId
+    const key: EntryKey = {
+      groupId: entry.groupId,
+      createdAt: entry.createdAt
+    }
   
     const params = {
       TableName: this.entriesTable,
@@ -83,7 +86,7 @@ export class EntryAccess {
       entry.body = updatedEntry.entryBody
 
       await this.createEntry(entry)
-      await this.deleteEntry(entry.entryId, entry.userId)
+      await this.deleteEntry(entry.entryId)
 
       return
     }
@@ -103,21 +106,6 @@ export class EntryAccess {
       }).promise()
     } catch (e) {
       throw e
-    }
-  }
-
-  private async getEntryKeyById(entryId: string): Promise<EntryKey> {
-    const result = await this.docClient.query({
-      TableName : this.entriesTable,
-      IndexName : this.entryIdIndex,
-      KeyConditionExpression: 'entryId = :entryId',
-      ExpressionAttributeValues: {
-          ':entryId': entryId
-      }
-    }).promise()
-
-    return {
-      'createdAt': result.Items[0].createdAt
     }
   }
 }
