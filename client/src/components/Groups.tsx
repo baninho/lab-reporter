@@ -4,8 +4,7 @@ import {
   Divider,
   Grid,
   Input,
-  Loader,
-  Container
+  Loader
 } from 'semantic-ui-react'
 
 import { createGroup, getGroups } from '../api/groups-api'
