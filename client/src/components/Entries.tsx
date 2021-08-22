@@ -2,6 +2,9 @@ import { History } from 'history'
 import * as React from 'react'
 import {
   Divider,
+  Dropdown,
+  DropdownProps,
+  Form,
   Grid,
   Input,
   Loader
@@ -24,6 +27,7 @@ interface EntriesState {
   newEntryName: string
   loadingEntries: boolean
   groups: Group[]
+  groupId: string
 }
 
 export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
@@ -31,11 +35,37 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
     entries: [],
     newEntryName: '',
     loadingEntries: true,
-    groups: []
+    groups: [],
+    groupId: 'all'
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newEntryName: event.target.value })
+  }
+
+  /**
+   * Change handler for group dropdown
+   * When selecting a group to filter for, filter entries state
+   */
+   handleGroupChange = async (event: React.SyntheticEvent, data: DropdownProps) => {
+    const groupId: string = data.value as string
+    this.setState({
+      loadingEntries: true,
+      groupId
+    })
+    var entries = await getEntries(this.props.auth.getIdToken())
+
+    if (groupId != 'all') {
+      entries = entries.filter((entry) => {
+        return entry.groupId == groupId
+      })
+    }
+    
+    this.setState({
+      groupId,
+      entries,
+      loadingEntries: false
+    })
   }
 
   onEditButtonClick = (entryId: string) => {
@@ -99,6 +129,18 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
   }
 
   renderCreateEntryInput() {
+    const groupsDropdown = this.state.groups.map((group) => {
+      return {
+        key: group.groupId,
+        text: group.name,
+        value: group.groupId
+      }
+    })
+    groupsDropdown.unshift({
+      key: 'all',
+      text: 'Alle Projekte',
+      value: 'all'
+    })
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -116,6 +158,23 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
             onChange={this.handleNameChange}
             value={this.state.newEntryName}
           />
+        </Grid.Column>
+        <Grid.Column width={16}>
+          <Divider />
+        </Grid.Column>
+        <Grid.Column width={16}>
+          <Form>
+          <Form.Input label="Einträge filtern" width={6}>
+              <Dropdown
+              placeholder="Alle Projekte"
+              fluid
+              selection
+              options={groupsDropdown}
+              onChange={this.handleGroupChange}
+              value={this.state.groupId}
+              />
+          </Form.Input>
+          </Form>
         </Grid.Column>
         <Grid.Column width={16}>
           <Divider />
