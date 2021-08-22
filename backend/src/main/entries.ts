@@ -1,15 +1,13 @@
 import * as uuid from 'uuid'
 
 import { EntryAccess } from "../dal/EntryAccess";
-import { UserAccess } from '../dal/UserAccess';
 import { EntryItem } from '../models/EntryItem';
 import { CreateEntryRequest } from "../requests/CreateEntryRequest";
 import { UpdateEntryRequest } from '../requests/UpdateEntryRequest';
 import { radix64 } from '../utils/radix64';
-import { createDynamoDBClient } from '../utils/utils';
+import { getUserById } from './users';
 
 const entryAccess = new EntryAccess()
-const userAccess = new UserAccess(createDynamoDBClient())
 
 export async function createEntry(entryRequest: CreateEntryRequest, userId: string):Promise<EntryItem> {
   const entryId = radix64(uuid.v4())
@@ -30,15 +28,20 @@ export async function createEntry(entryRequest: CreateEntryRequest, userId: stri
 }
 
 export async function getEntriesByUser(userId:string): Promise<EntryItem[]> {
-  const groups = (await userAccess.getUserById(userId)).groups
-  const entries = []
+  const groups = (await getUserById(userId)).groups
+  const entries: EntryItem[] = []
 
-  for (const g of groups) {
-    var entryGroup = await entryAccess.getEntriesByGroup(g)
-    entries.push(...entryGroup);
+  try {
+    for (const g of groups) {
+      var entryGroup = await entryAccess.getEntriesByGroup(g)
+      entries.push(...entryGroup);
+    }
+  } catch (e) {
+    console.log('Error: ' + e.message)
   }
+  console.log(entries)
 
-  return entries
+  return entries as EntryItem[]
 }
 
 export async function getEntryById(entryId:string): Promise<EntryItem> {
