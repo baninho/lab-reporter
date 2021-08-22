@@ -75,10 +75,10 @@ export default class App extends Component<AppProps, AppState> {
           <Image size="mini" src='/LOGO_MushRoom_farbirg-weiß-scaled.png' />
         </Menu.Item>
         <Menu.Item header>Laborbuch</Menu.Item>
-        <Menu.Item name="home" as="a">
+        <Menu.Item name="home">
           <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item name="home" as="a">
+        <Menu.Item name="home">
           <Link to="/groups">Projekte</Link>
         </Menu.Item>
 
@@ -93,7 +93,7 @@ export default class App extends Component<AppProps, AppState> {
   profileButton() {
     if (this.props.auth.isAuthenticated()) { 
       return(
-        <Menu.Item name="profile" as="a">
+        <Menu.Item name="profile">
           <Link to="/profile">Profil</Link>
         </Menu.Item>
       )
