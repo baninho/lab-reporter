@@ -21,11 +21,10 @@ export async function createUser(user:User): Promise<User> {
 
 export async function updateUser(userUpdate:UpdateUserRequest, userIdRequest: string) {
   if (userUpdate.newGroups) {
-    const requester: User = await getUserById(userIdRequest)
     const groups: Group[] = await getGroups()
     const ownedGroupIds: string[] = groups
     .filter((group) => {
-      return group.owners.includes(requester.userId)
+      return group.owners.includes(userIdRequest)
     })
     .map((group) => {
       return group.groupId
