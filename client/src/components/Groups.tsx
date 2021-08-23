@@ -145,7 +145,7 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
 
   renderGroupsList() {
     return (
-      <Grid>
+      <Grid.Row>
         {this.state.groups.map((group) => {
           return (
             <Grid.Column width={16} key={group.groupId}>
@@ -154,7 +154,7 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
             </Grid.Column>
           )
         })}
-      </Grid>
+      </Grid.Row>
     )
   }
 }
