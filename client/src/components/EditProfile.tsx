@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container, Divider, DropdownProps, Form, Grid, List, Loader } from "semantic-ui-react";
+import { Button, Container, Divider, Form, Grid, List, Loader } from "semantic-ui-react";
 import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
@@ -53,6 +53,9 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
       await this.fetchUser()
+      this.setState({
+        loading: false
+      })
     }
   }
 
