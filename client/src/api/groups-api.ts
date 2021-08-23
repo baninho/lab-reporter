@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import { apiEndpoint } from '../config'
 import { Group } from '../types/Group'
-import * as uuid from 'uuid'
+import { GroupRequest } from '../types/GroupRequest'
 
 /**
  * This will return all the existing groups to any user
@@ -29,10 +29,12 @@ export async function getGroups(idToken: string): Promise<Group[]> {
  * @returns newly created group
  */
 export async function createGroup(idToken: string, name: string): Promise<Group> {
-  // TODO: id has to be assigned by backend to avoid replacing groups to gain access to entries
+  // id has to be assigned by backend to avoid replacing groups to gain access to entries
   // should be implemented through a GroupRequest
-  const group: Group = new Group(uuid.v4(), name)
-  const response = await Axios.post(`${apiEndpoint}/groups`, JSON.stringify(group), {
+  const groupRequest: GroupRequest = {
+    name
+  }
+  const response = await Axios.post(`${apiEndpoint}/groups`, JSON.stringify(groupRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

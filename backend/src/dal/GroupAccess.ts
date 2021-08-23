@@ -6,7 +6,7 @@ export class GroupAccess {
   private readonly docClient: DocumentClient = createDynamoDBClient()
   private readonly groupsTable = process.env.GROUPS_TABLE
   
-  async createGroup(group: Group): Promise<Group> {
+  async putGroup(group: Group): Promise<Group> {
     await this.docClient.put({
       TableName: this.groupsTable,
       Item: group
