@@ -64,35 +64,6 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
     })
   }
 
-  /**
-   * Change handler for Group selector
-   * Add group to user if selecting user has owner rights
-   * 
-   * TODO: It's actually more sensible to edit groups to contain members 
-   * - move this functionality to a group edit page
-   */
-  handleGroupsChange = async (event: React.SyntheticEvent, data: DropdownProps) => {
-    console.log(data.value)
-    const value: string[] = data.value as string[]
-
-    var removedId: string = this.state.groupIds.filter((id) => {
-      return !value.includes(id)
-    })[0]
-
-    var newId: string = value.filter((id) => {
-      return !this.state.groupIds.includes(id)
-    })[0]
-
-    console.log('new: ' + newId)
-    console.log('removed: ' + removedId)
-
-    // TODO: API call to actually add/remove group membership
-
-    this.setState({
-      groupIds: value
-    })
-  }
-
   fetchUser = async () => {
     try {
       const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
