@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container, Divider, Dropdown, DropdownProps, Form, Grid, Loader } from "semantic-ui-react";
+import { Button, Container, Divider, DropdownProps, Form, Grid, List, Loader } from "semantic-ui-react";
 import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
@@ -131,13 +131,6 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
   }
 
   renderProfileEdit() {
-    const options = this.state.allGroups.map((group) => {
-      return {
-        key: group.groupId,
-        text: group.name,
-        value: group.groupId
-      }
-    })
     return (
       <Container>
         <h2>Hallo, {this.state.user.name || 'neuer Benutzer'}!</h2>
@@ -152,16 +145,19 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
           <Button positive>Speichern</Button>
         </Form>
         <Divider />
-        <Form>
-        <Form.Input
-        label="Projekte">
-        <Dropdown fluid multiple selection
-        options={options}
-        onChange={this.handleGroupsChange}
-        value={this.state.groupIds}
-        />
-        </Form.Input>
-        </Form>
+        <h3>Projekte</h3>
+        <List horizontal divided relaxed>
+          {this.state.user.groups.map( (groupId) => {
+            const group: Group = this.state.allGroups.find((group) => {
+              return group.groupId === groupId
+            }) || new Group('', '')
+            return (
+              <List.Item key={groupId}>
+                {group.name}
+              </List.Item>
+            )
+          })}
+        </List>
       </Container>
     )
   }
