@@ -9,7 +9,7 @@ beforeAll(() => {
 
 test('get groups from database', async () => {
   process.env.GROUPS_TABLE = 'Groups-test' 
-  await createGroup(testGroup)
+  await createGroup(testGroup, 'testUserId')
   const groups = await getGroups()
   expect(groups).toContainEqual(testGroup)
 })
