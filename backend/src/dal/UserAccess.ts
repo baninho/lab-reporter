@@ -68,4 +68,17 @@ export class UserAccess {
       throw e
     }
   }
+
+  async getUsers(): Promise<User[]> {
+    try {
+      const result =  await this.docClient.scan({
+        TableName: this.usersTable
+      }).promise()
+
+      return result.Items as User[]
+      
+    } catch (e) {
+      throw(e)
+    }
+  }
 }
