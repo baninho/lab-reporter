@@ -10,6 +10,7 @@ import { NotFound } from './components/NotFound'
 import { Entries } from './components/Entries'
 import { EditProfile } from './components/EditProfile'
 import { Groups } from './components/Groups'
+import { EditGroup } from './components/EditGroup'
 
 export interface AppProps {}
 
@@ -160,6 +161,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <Groups {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route 
+          path="/groups/:groupId"
+          exact
+          render={props => {
+            return <EditGroup {...props} auth={this.props.auth} />
           }}
         />
 
