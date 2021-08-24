@@ -16,14 +16,22 @@ const logger = createLogger('updateUser')
  */
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userUpdate: UpdateUserRequest = JSON.parse(event.body)
+  const userIdRequest: string = getUserId(event)
+  
+  var statusCode: number
 
   logger.info(`update user ${userUpdate.userId}`)
   logger.info(`update content ${JSON.stringify(userUpdate)}`)
 
-  await updateUser(userUpdate, getUserId(event))
+  if (userUpdate.userId !== userIdRequest) {
+    statusCode = 403
+  } else {
+    statusCode = 200
+    await updateUser(userUpdate, userIdRequest)
+  }
 
   return {
-    statusCode: 200,
+    statusCode,
     body: ''
   }
 })
