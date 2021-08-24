@@ -64,5 +64,5 @@ test('get all users', async () => {
   await userAccess.createUser(testUserQuery)
   await userAccess.createUser(testUser)
   const res = await userAccess.getUsers()
-  expect(res).toContainEqual([testUser, testUserQuery])
+  expect(res).toEqual([ expect.objectContaining(testUserQuery), expect.objectContaining(testUser)])
 })
