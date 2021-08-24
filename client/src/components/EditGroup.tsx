@@ -99,6 +99,10 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     }
   }
 
+  /**
+   * Handle change to the name input field
+   * @param event name input element event
+   */
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value
     
