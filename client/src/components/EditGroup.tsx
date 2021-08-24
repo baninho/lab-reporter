@@ -4,7 +4,7 @@ import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
 import { parseUserId } from "../util/utils";
-import { getUserById } from "../api/users-api";
+import { getUserById, getUsers } from "../api/users-api";
 import { Group } from "../types/Group";
 import { getGroups } from "../api/groups-api";
 
@@ -24,6 +24,7 @@ interface EditGroupState {
   loading: boolean
   name: string
   allGroups: Group[]
+  allUsers: User[]
   ownerIds: string[]
   memberIds: string[]
 }
@@ -35,6 +36,7 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     loading: true,
     name: '',
     allGroups: [],
+    allUsers: [],
     ownerIds: [],
     memberIds: []
   }
@@ -62,6 +64,9 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
       await this.fetchUser()
+      this.setState({
+        loading: false
+      })
     }
   }
 
@@ -88,6 +93,9 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
       await this.fetchUser()
+      this.setState({
+        loading: false
+      })
     }
   }
 
@@ -162,9 +170,13 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
    */
   fetchUser = async () => {
     try {
-      const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
+      const users: User[] = await getUsers(this.props.auth.idToken)
+      const user = users.find(u => {
+        return u.userId === parseUserId(this.props.auth.idToken)
+      })
       this.setState({
-        user
+        user: user ? user : this.state.user,
+        allUsers: users
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
@@ -210,11 +222,11 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
    * @returns Group edit form JSX
    */
   renderGroupEdit() {
-    const options = this.state.group.owners.map((owner) => {
+    const options = this.state.allUsers.map((u) => {
       return {
-        key: owner,
-        text: owner,
-        value: owner
+        key: u.userId,
+        text: u.name ? u.name : 'unnamed user',
+        value: u.userId
       }
     })
     return (
