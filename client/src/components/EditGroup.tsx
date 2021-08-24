@@ -4,8 +4,7 @@ import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
 import { parseUserId } from "../util/utils";
-import { getUserById, updateUser } from "../api/users-api";
-import { UpdateUserRequest } from "../types/UpdateUserRequest";
+import { getUserById } from "../api/users-api";
 import { Group } from "../types/Group";
 import { getGroups } from "../api/groups-api";
 
@@ -54,11 +53,6 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
         alert('Konnte User nicht laden')
         return
       }
-      
-      const updatedUser: UpdateUserRequest = {
-        userId: this.state.user.userId,
-        name: this.state.name
-      }
 
       this.setState({
         loading: true
@@ -84,11 +78,6 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       if (!this.state.user) {
         alert('Konnte User nicht laden')
         return
-      }
-      
-      const updatedUser: UpdateUserRequest = {
-        userId: this.state.user.userId,
-        name: this.state.name
       }
 
       this.setState({
@@ -116,7 +105,7 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
    */
   handleOwnersChange = async (event: React.SyntheticEvent, data: DropdownProps) => {
     console.log(data.value)
-    
+
     if (!(data.value as string[])[0]) return
 
     const value: string[] = data.value as string[]
