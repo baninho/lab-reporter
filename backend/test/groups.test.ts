@@ -1,15 +1,17 @@
 import { createGroup, getGroups } from "../src/main/groups"
-import { Group } from "../src/models/Group"
+import { GroupRequest } from "../src/requests/GroupRequest"
 
-var testGroup: Group
+var testGroup: GroupRequest
 
 beforeAll(() => {
-  testGroup = new Group('testGroupId', 'testGroupName')
+  testGroup = {
+    name: 'testGroup'
+  }
 })
 
 test('get groups from database', async () => {
   process.env.GROUPS_TABLE = 'Groups-test' 
   await createGroup(testGroup, 'testUserId')
   const groups = await getGroups()
-  expect(groups).toContainEqual(testGroup)
+  expect(groups[0].owners).toContainEqual('testUserId')
 })
