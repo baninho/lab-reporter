@@ -36,3 +36,10 @@ export async function updateUser(userUpdate:UpdateUserRequest, userIdRequest: st
   
   await userAccess.updateUser(userUpdate)
 }
+
+/**
+ * get all existing users
+ */
+export async function getUsers() {
+   return await userAccess.getUsers()
+}
