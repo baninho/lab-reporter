@@ -4,7 +4,7 @@ import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
 import { parseUserId } from "../util/utils";
-import { getUserById, getUsers } from "../api/users-api";
+import { getUsers } from "../api/users-api";
 import { Group } from "../types/Group";
 import { getGroups } from "../api/groups-api";
 
