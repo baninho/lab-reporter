@@ -6,7 +6,8 @@ import { History } from 'history'
 import { parseUserId } from "../util/utils";
 import { getUsers } from "../api/users-api";
 import { Group } from "../types/Group";
-import { getGroups } from "../api/groups-api";
+import { getGroups, updateGroup } from "../api/groups-api";
+import { UpdateGroupRequest } from "../types/UpdateGroupRequest";
 
 interface EditGroupProps {
   match: {
@@ -43,13 +44,13 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
 
   /**
    * Handle submit of name form
+   * preprocess and make the API call to change the group name
    * @param event React submit event
    * @returns nothing
    */
   handleNameSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
-    // TODO: preprocess and make the API call to change th group name
     try {
       if (!this.state.user) {
         alert('Konnte User nicht laden')
@@ -59,11 +60,18 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       this.setState({
         loading: true
       })
+
+      const groupUpdate: UpdateGroupRequest = {
+        groupId: this.state.group.groupId,
+        name: this.state.name
+      }
+
+      await updateGroup(this.props.auth.idToken, groupUpdate)
       
     } catch (e) {
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
-      await this.fetchUser()
+      await this.fetchGroups()
       this.setState({
         loading: false
       })

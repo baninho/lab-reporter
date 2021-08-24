@@ -1,5 +1,6 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { Group } from '../models/Group'
+import { UpdateGroupRequest } from '../requests/UpdateGroupRequest'
 import { createDynamoDBClient } from '../utils/utils'
 
 export class GroupAccess {
@@ -21,5 +22,32 @@ export class GroupAccess {
     }).promise()
     
     return result.Items as Group[]
+  }
+
+  async updateGroup(update: UpdateGroupRequest) {
+    const UpdateExpression = `SET #N=:n`
+    const ExpressionAttributeValues = {
+      ':n': update.name
+    }
+    const ExpressionAttributeNames = {
+      '#N': 'name' 
+    }
+
+    const updateParams = {
+      TableName: this.groupsTable,
+      Key: {
+        groupId: update.groupId
+      },
+      ExpressionAttributeNames,
+      UpdateExpression,
+      ExpressionAttributeValues,
+      ReturnValues:'ALL_NEW'
+    }
+
+    try {
+      return await this.docClient.update(updateParams).promise()
+    } catch (e) {
+      throw(e)
+    }
   }
 }

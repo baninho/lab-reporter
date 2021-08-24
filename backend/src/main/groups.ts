@@ -2,6 +2,7 @@ import { GroupAccess } from "../dal/GroupAccess";
 import { Group } from "../models/Group";
 import { GroupRequest } from "../requests/GroupRequest";
 import * as uuid from 'uuid'
+import { UpdateGroupRequest } from "../requests/UpdateGroupRequest";
 
 const groupAccess = new GroupAccess()
 
@@ -31,4 +32,12 @@ export async function addMember(group:Group, newMemberId: string, userId: string
   group.members.push(newMemberId)
   
   return await groupAccess.putGroup(group)
+}
+
+/**
+ * Update group database entry according to groupUpdate object
+ * @param groupUpdate group update specification
+ */
+export async function updateGroup(groupUpdate:UpdateGroupRequest) {
+  return( await groupAccess.updateGroup(groupUpdate) )
 }

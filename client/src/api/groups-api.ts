@@ -2,6 +2,7 @@ import Axios from 'axios'
 import { apiEndpoint } from '../config'
 import { Group } from '../types/Group'
 import { GroupRequest } from '../types/GroupRequest'
+import { UpdateGroupRequest } from '../types/UpdateGroupRequest'
 
 /**
  * This will return all the existing groups to any user
@@ -42,4 +43,19 @@ export async function createGroup(idToken: string, name: string): Promise<Group>
   })
 
   return response.data.group
+}
+
+/**
+ * Update a group according to the provided update object
+ * by PATCH request to the /groups API
+ * @param idToken auth0 id token
+ * @param update group update request
+ */
+export async function updateGroup(idToken: string, update: UpdateGroupRequest) {
+  await Axios.patch(`${apiEndpoint}/groups`, JSON.stringify(update), {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
 }
