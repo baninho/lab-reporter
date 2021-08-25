@@ -58,9 +58,6 @@ export class UserAccess {
     if (Object.keys(exprAttrNames).length > 0) {
       params.ExpressionAttributeNames = exprAttrNames
     }
-
-    console.log('updateexpr: ' + params.UpdateExpression)
-    console.log('exprattrvals: ' + params.ExpressionAttributeValues)
     
     try {
       await this.docClient.update(params).promise()
