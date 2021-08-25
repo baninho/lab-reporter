@@ -4,6 +4,8 @@ import { deleteEntry, getEntryById } from '../api/entries-api'
 import { Entry } from '../types/Entry'
 import { Button, Container, Grid, Header, Icon, Loader, Segment, SegmentGroup } from 'semantic-ui-react'
 import { History } from 'history'
+import { Group } from '../types/Group'
+import { getGroups } from '../api/groups-api'
 
 interface EntryDetailProps {
   match: {
@@ -18,6 +20,8 @@ interface EntryDetailProps {
 interface EntryDetailState {
   entry: Entry
   loadingEntries: boolean
+  groups: Group[]
+  group: Group
 }
 
 export class EntryDetail extends React.PureComponent<
@@ -26,7 +30,9 @@ export class EntryDetail extends React.PureComponent<
 > {
   state: EntryDetailState = {
     entry: new Entry(),
-    loadingEntries: true
+    loadingEntries: true,
+    groups: [],
+    group: new Group('', '')
   }
 
   onEntryDelete = async (e: React.SyntheticEvent, entryId: string) => {
@@ -51,9 +57,14 @@ export class EntryDetail extends React.PureComponent<
   async componentDidMount() {
     try {
       const entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
+      const groups: Group[] = await getGroups(this.props.auth.idToken)
+      const group = groups.find((g) => {return g.groupId === entry.groupId})
+
       this.setState({
         entry,
-        loadingEntries: false
+        loadingEntries: false,
+        groups,
+        group: group ? group : this.state.group
       })
     } catch (e) {
       alert(`Failed to fetch entry: ${e.message}`)
@@ -64,8 +75,11 @@ export class EntryDetail extends React.PureComponent<
     return (
       <Container style={{ padding: '4em 0em' }}>
         <Grid>
-          <Grid.Column width={14}>
+          <Grid.Column width={10}>
             <Header as="h1">{this.state.entry.name}</Header>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <h2>Projekt: {this.state.group.name}</h2>
           </Grid.Column>
           <Grid.Column width={2}>
             <Button
