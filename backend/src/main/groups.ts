@@ -17,27 +17,37 @@ export async function getGroups(): Promise<Group[]> {
   return await groupAccess.getGroups()
 }
 
-export async function addOwner(group: Group, newOwnerId: string, userId: string) {
-  if (!group.owners.includes(userId)) throw(new Error('No permission'))
-  
-  if (!group.members.includes(userId)) group.members.push(userId)
-  group.owners.push(newOwnerId)
-  
-  return await groupAccess.putGroup(group)
-}
-
-export async function addMember(group:Group, newMemberId: string, userId: string) {
-  if (!group.owners.includes(userId)) throw(new Error('No permission'))
-  
-  group.members.push(newMemberId)
-  
-  return await groupAccess.putGroup(group)
-}
-
 /**
  * Update group database entry according to groupUpdate object
  * @param groupUpdate group update specification
  */
 export async function updateGroup(groupUpdate:UpdateGroupRequest) {
-  return( await groupAccess.updateGroup(groupUpdate) )
+  const group = await getGroupById(groupUpdate.groupId)
+
+  if (groupUpdate.name) {
+    group.name = groupUpdate.name
+  }
+
+  if (groupUpdate.newMembers) {
+    group.members.push(...groupUpdate.newMembers)
+  }
+
+  if (groupUpdate.newOwners) {
+    group.owners.push(...groupUpdate.newOwners)
+  }
+
+  if (groupUpdate.deleteMember) {
+    group.members = group.members.filter(id => {return !groupUpdate.deleteMember.includes(id)})
+  }
+
+  if (groupUpdate.deleteOwners) {
+    group.owners = group.owners.filter(id => {return !groupUpdate.deleteOwners.includes(id)})
+  }
+
+  return( await groupAccess.putGroup(group) )
+}
+
+async function getGroupById(groupId:string): Promise<Group> {
+  const groups: Group[] = await getGroups()
+  return groups.find(g => {return g.groupId === groupId})
 }

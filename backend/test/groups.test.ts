@@ -6,21 +6,20 @@ import { UpdateGroupRequest } from "../src/requests/UpdateGroupRequest"
 var testGroup: GroupRequest
 var groups: Group[]
 
-beforeAll(() => {
+beforeAll(async () => {
   process.env.GROUPS_TABLE = 'Groups-test' 
   testGroup = {
     name: 'testGroup'
   }
+  await createGroup(testGroup, 'testUserId')
 })
 
 test('get groups from database', async () => {
-  await createGroup(testGroup, 'testUserId')
   groups = await getGroups()
   expect(groups[0].owners).toContainEqual('testUserId')
 })
 
-test('update group', async () => {
-  await createGroup(testGroup, 'testUserId')
+test('update group name', async () => {
   const groupUpdate: UpdateGroupRequest = {
     groupId: groups[0].groupId,
     name: 'testChangeName'
@@ -28,4 +27,48 @@ test('update group', async () => {
   await updateGroup(groupUpdate)
   groups = await getGroups()
   expect(groups.find(g => {return g.groupId === groupUpdate.groupId}).name).toEqual(groupUpdate.name)
+})
+
+test('add group owners', async () => {
+  const groupUpdate: UpdateGroupRequest = {
+    groupId: groups[0].groupId,
+    newOwners: ['testNewOwner']
+  }
+  await updateGroup(groupUpdate)
+  groups = await getGroups()
+  expect(groups.find(g => {return g.groupId === groupUpdate.groupId}).owners)
+  .toEqual(expect.arrayContaining(groupUpdate.newOwners))
+})
+
+test('remove group owners', async () => {
+  const groupUpdate: UpdateGroupRequest = {
+    groupId: groups[0].groupId,
+    deleteOwners: ['testNewOwner']
+  }
+  await updateGroup(groupUpdate)
+  groups = await getGroups()
+  expect(groups.find(g => {return g.groupId === groupUpdate.groupId}).owners)
+  .not.toEqual(expect.arrayContaining(groupUpdate.deleteOwners))
+})
+
+test('add group members', async () => {
+  const groupUpdate: UpdateGroupRequest = {
+    groupId: groups[0].groupId,
+    newMembers: ['testNewMember']
+  }
+  await updateGroup(groupUpdate)
+  groups = await getGroups()
+  expect(groups.find(g => {return g.groupId === groupUpdate.groupId}).members)
+  .toEqual(expect.arrayContaining(groupUpdate.newMembers))
+})
+
+test('remove group members', async () => {
+  const groupUpdate: UpdateGroupRequest = {
+    groupId: groups[0].groupId,
+    deleteMember: ['testNewMember']
+  }
+  await updateGroup(groupUpdate)
+  groups = await getGroups()
+  expect(groups.find(g => {return g.groupId === groupUpdate.groupId}).members)
+  .not.toEqual(expect.arrayContaining(groupUpdate.deleteMember))
 })
