@@ -9,6 +9,9 @@ import { Attachment } from '../types/Attachment'
 import { HashTable } from '../types/HashTable'
 import { Group } from '../types/Group'
 import { getGroups } from '../api/groups-api'
+import { User } from '../types/User'
+import { getUserById } from '../api/users-api'
+import { parseUserId } from '../util/utils'
 
 enum UploadState {
   NoUpload,
@@ -210,7 +213,8 @@ EditEntryState
   
   async componentDidMount() {
     const entry: Entry = await getEntryById(this.props.auth.getIdToken(), this.props.match.params.entryId)
-    const groups: Group[] = await getGroups(this.props.auth.getIdToken())
+    const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
+    const groups: Group[] = (await getGroups(this.props.auth.getIdToken())).filter(g => {return user.groups.includes(g.groupId)})
     const deleting: HashTable = {}
     entry.attachments.forEach((att) => {deleting[att.key] = false})
     
@@ -349,7 +353,7 @@ EditEntryState
       <SegmentGroup>
       {this.state.entry.attachments.map((att) => {
         return (
-          <Segment>
+          <Segment key={att.key}>
           <Grid>
           <Grid.Column width={15} verticalAlign="middle">
           <a href={att.attachmentUrl}>{att.name}</a>
