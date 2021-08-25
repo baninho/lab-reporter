@@ -3,6 +3,7 @@ import { Group } from "../models/Group";
 import { GroupRequest } from "../requests/GroupRequest";
 import * as uuid from 'uuid'
 import { UpdateGroupRequest } from "../requests/UpdateGroupRequest";
+import { createUser, getUserById } from "./users";
 
 const groupAccess = new GroupAccess()
 
@@ -23,9 +24,20 @@ export async function getGroups(): Promise<Group[]> {
  */
 export async function updateGroup(groupUpdate:UpdateGroupRequest) {
   const group = await getGroupById(groupUpdate.groupId)
+  const keys = Object.keys(groupUpdate)
 
-  for (let k of Object.keys(groupUpdate)) {
+  for (let k of keys) {
     group[k] = groupUpdate[k]
+  }
+
+  if (keys.includes('members')) {
+    for (let userId of group.members) {
+      const user = await getUserById(userId)
+
+      user.groups.push(group.groupId)
+
+      await createUser(user)
+    }
   }
 
   return( await groupAccess.putGroup(group) )

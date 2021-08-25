@@ -80,13 +80,13 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
 
   /**
    * Handle submit of members/owners form
+   * preprocess and make the API call to update group members/owners
    * @param event React submit event
    * @returns nothing
    */
   handleUsersSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
-
-    // TODO: preprocess and make the API call to update group members/owners
+    
     try {
       if (!this.state.user) {
         alert('Konnte User nicht laden')
@@ -96,11 +96,20 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       this.setState({
         loading: true
       })
+
+      const groupUpdate: UpdateGroupRequest = {
+        groupId: this.state.group.groupId,
+        members: this.state.memberIds,
+        owners: this.state.ownerIds
+      }
+
+      await updateGroup(this.props.auth.idToken, groupUpdate)
       
     } catch (e) {
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
       await this.fetchUser()
+      await this.fetchGroups()
       this.setState({
         loading: false
       })
