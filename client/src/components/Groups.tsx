@@ -1,5 +1,6 @@
 import { History } from 'history'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import {
   Divider,
   Grid,
@@ -145,16 +146,16 @@ export class Groups extends React.PureComponent<GroupsProps, GroupsState> {
 
   renderGroupsList() {
     return (
-      <Grid>
+      <Grid.Row>
         {this.state.groups.map((group) => {
           return (
             <Grid.Column width={16} key={group.groupId}>
-              <h2>{group.name}</h2>
+              <Link to={'/groups/' + group.groupId}><h2>{group.name}</h2></Link>
               <Divider />
             </Grid.Column>
           )
         })}
-      </Grid>
+      </Grid.Row>
     )
   }
 }

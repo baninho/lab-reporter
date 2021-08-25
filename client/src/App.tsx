@@ -10,6 +10,7 @@ import { NotFound } from './components/NotFound'
 import { Entries } from './components/Entries'
 import { EditProfile } from './components/EditProfile'
 import { Groups } from './components/Groups'
+import { EditGroup } from './components/EditGroup'
 
 export interface AppProps {}
 
@@ -75,10 +76,10 @@ export default class App extends Component<AppProps, AppState> {
           <Image size="mini" src='/LOGO_MushRoom_farbirg-weiß-scaled.png' />
         </Menu.Item>
         <Menu.Item header>Laborbuch</Menu.Item>
-        <Menu.Item name="home" as="a">
+        <Menu.Item name="home">
           <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item name="home" as="a">
+        <Menu.Item name="home">
           <Link to="/groups">Projekte</Link>
         </Menu.Item>
 
@@ -93,7 +94,7 @@ export default class App extends Component<AppProps, AppState> {
   profileButton() {
     if (this.props.auth.isAuthenticated()) { 
       return(
-        <Menu.Item name="profile" as="a">
+        <Menu.Item name="profile">
           <Link to="/profile">Profil</Link>
         </Menu.Item>
       )
@@ -160,6 +161,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <Groups {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route 
+          path="/groups/:groupId"
+          exact
+          render={props => {
+            return <EditGroup {...props} auth={this.props.auth} />
           }}
         />
 

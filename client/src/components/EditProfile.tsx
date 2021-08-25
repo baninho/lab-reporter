@@ -1,11 +1,13 @@
 import React from "react";
-import { Button, Container, Form, Grid, Loader } from "semantic-ui-react";
+import { Button, Container, Divider, Form, Grid, List, Loader } from "semantic-ui-react";
 import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
 import { parseUserId } from "../util/utils";
 import { getUserById, updateUser } from "../api/users-api";
 import { UpdateUserRequest } from "../types/UpdateUserRequest";
+import { Group } from "../types/Group";
+import { getGroups } from "../api/groups-api";
 
 interface EditProfileProps {
   auth: Auth
@@ -16,13 +18,17 @@ interface EditProfileState {
   user: User
   loading: boolean
   name: string
+  allGroups: Group[]
+  groupIds: string[]
 }
 
 export class EditProfile extends React.PureComponent<EditProfileProps, EditProfileState> {
   state: EditProfileState = {
     user: new User("", "", []),
     loading: true,
-    name: ''
+    name: '',
+    allGroups: [],
+    groupIds: []
   }
 
   handleSubmit = async (event: React.SyntheticEvent) => {
@@ -47,6 +53,9 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
       await this.fetchUser()
+      this.setState({
+        loading: false
+      })
     }
   }
 
@@ -60,22 +69,39 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
 
   fetchUser = async () => {
     try {
-      this.setState({
-        loading: true
-      })
       const user: User = await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
       this.setState({
         user,
-        loading: false,
-        name: user.name
+        name: user.name,
+        groupIds: user.groups
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
     }
   }
 
+  fetchGroups = async () => {
+    try {
+      const groups: Group[] = await getGroups(this.props.auth.idToken)
+      this.setState({
+        allGroups: groups
+      })
+    } catch (e) {
+      alert(`Failed to fetch groups: ${e.message}`)
+    }
+  }
+
   async componentDidMount() {
+    this.setState({
+      loading: true
+    })
+
     await this.fetchUser()
+    await this.fetchGroups()
+
+    this.setState({
+      loading: false
+    })
   }
 
   renderProfileEdit() {
@@ -92,6 +118,20 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
           />
           <Button positive>Speichern</Button>
         </Form>
+        <Divider />
+        <h3>Projekte</h3>
+        <List horizontal divided relaxed>
+          {this.state.user.groups.map( (groupId) => {
+            const group: Group = this.state.allGroups.find((group) => {
+              return group.groupId === groupId
+            }) || new Group('', '')
+            return (
+              <List.Item key={groupId}>
+                {group.name}
+              </List.Item>
+            )
+          })}
+        </List>
       </Container>
     )
   }

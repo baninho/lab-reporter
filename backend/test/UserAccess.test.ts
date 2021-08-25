@@ -59,3 +59,10 @@ test('Add new group', async () => {
   const res = await userAccess.getUserById(testUserUpdateNewGroup.userId)
   expect(res.groups).toEqual(expect.arrayContaining(testUserUpdateNewGroup.newGroups))
 })
+
+test('get all users', async () => {
+  await userAccess.createUser(testUserQuery)
+  await userAccess.createUser(testUser)
+  const res = await userAccess.getUsers()
+  expect(res).toEqual([ expect.objectContaining(testUserQuery), expect.objectContaining(testUser)])
+})

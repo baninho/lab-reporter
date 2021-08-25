@@ -37,6 +37,37 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
+  UpdateGroup:
+    handler: src/lambda/http/updateGroup.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
+    events:
+      - http:
+          method: patch
+          path: groups
+          cors: true
+          authorizer: Auth
+
+  GetUsers:
+    handler: src/lambda/http/getUsers.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+    events:
+      - http:
+          method: get
+          path: users
+          cors: true
+          authorizer: Auth
+
   CreateGroup:
     handler: src/lambda/http/createGroup.handler
     iamRoleStatements:
@@ -77,9 +108,8 @@ functions:
     events:
       - http:
           method: get
-          path: users
+          path: user
           cors:
-            origin: "*"
             headers:
               - Content-Type
               - X-Amz-Date
@@ -93,6 +123,11 @@ functions:
   UpdateUser:
     handler: src/lambda/http/updateUser.handler
     iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem

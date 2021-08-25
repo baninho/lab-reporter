@@ -58,11 +58,27 @@ export class UserAccess {
     if (Object.keys(exprAttrNames).length > 0) {
       params.ExpressionAttributeNames = exprAttrNames
     }
+
+    console.log('updateexpr: ' + params.UpdateExpression)
+    console.log('exprattrvals: ' + params.ExpressionAttributeValues)
     
     try {
       await this.docClient.update(params).promise()
     } catch (e) {
       throw e
+    }
+  }
+
+  async getUsers(): Promise<User[]> {
+    try {
+      const result =  await this.docClient.scan({
+        TableName: this.usersTable
+      }).promise()
+
+      return result.Items as User[]
+      
+    } catch (e) {
+      throw(e)
     }
   }
 }

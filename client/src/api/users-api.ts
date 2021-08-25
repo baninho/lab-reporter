@@ -6,7 +6,7 @@ import { User } from '../types/User'
 export async function getUserById(idToken: string, userId: string): Promise<User> {
   console.log(`Fetching entry ${userId}`)
 
-  const response = await Axios.get(`${apiEndpoint}/users`, {
+  const response = await Axios.get(`${apiEndpoint}/user`, {
     headers: {
       'userid': userId,
       'Content-Type': 'application/json',
@@ -23,4 +23,22 @@ export async function updateUser(idToken: string, userUpdate: UpdateUserRequest)
       'Authorization': `Bearer ${idToken}`
     }
   })
+}
+
+/**
+ * Get all existing users from API
+ * 
+ * @param idToken auth0 idToken
+ * @returns all existing users
+ */
+export async function getUsers(idToken: string): Promise<User[]> {
+  console.log(`Fetching all users`)
+
+  const response = await Axios.get(`${apiEndpoint}/users`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+  return response.data.users
 }
