@@ -24,24 +24,8 @@ export async function getGroups(): Promise<Group[]> {
 export async function updateGroup(groupUpdate:UpdateGroupRequest) {
   const group = await getGroupById(groupUpdate.groupId)
 
-  if (groupUpdate.name) {
-    group.name = groupUpdate.name
-  }
-
-  if (groupUpdate.newMembers) {
-    group.members.push(...groupUpdate.newMembers)
-  }
-
-  if (groupUpdate.newOwners) {
-    group.owners.push(...groupUpdate.newOwners)
-  }
-
-  if (groupUpdate.deleteMember) {
-    group.members = group.members.filter(id => {return !groupUpdate.deleteMember.includes(id)})
-  }
-
-  if (groupUpdate.deleteOwners) {
-    group.owners = group.owners.filter(id => {return !groupUpdate.deleteOwners.includes(id)})
+  for (let k of Object.keys(groupUpdate)) {
+    group[k] = groupUpdate[k]
   }
 
   return( await groupAccess.putGroup(group) )
