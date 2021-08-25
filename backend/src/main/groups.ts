@@ -26,18 +26,30 @@ export async function updateGroup(groupUpdate:UpdateGroupRequest) {
   const group = await getGroupById(groupUpdate.groupId)
   const keys = Object.keys(groupUpdate)
 
-  for (let k of keys) {
-    group[k] = groupUpdate[k]
-  }
-
   if (keys.includes('members')) {
-    for (let userId of group.members) {
+    // Add group to user if he is a new member
+    for (let userId of groupUpdate.members) {
       const user = await getUserById(userId)
 
-      user.groups.push(group.groupId)
+      if (!user.groups.includes(group.groupId)) {
+        user.groups.push(group.groupId)
+        await createUser(user)
+      }
+    }
 
+    // Remove group from user if they were removed from members
+    for (let userId of group.members) {
+      if (groupUpdate.members.includes(userId)) continue // user was not removed from group
+
+      const user = await getUserById(userId)
+
+      user.groups = user.groups.filter(id => {return id !== group.groupId})
       await createUser(user)
     }
+  }
+
+  for (let k of keys) {
+    group[k] = groupUpdate[k]
   }
 
   return( await groupAccess.putGroup(group) )
