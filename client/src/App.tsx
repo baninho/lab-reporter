@@ -11,6 +11,7 @@ import { Entries } from './components/Entries'
 import { EditProfile } from './components/EditProfile'
 import { Groups } from './components/Groups'
 import { EditGroup } from './components/EditGroup'
+import { User } from './types/User'
 
 export interface AppProps {}
 
@@ -35,10 +36,6 @@ export default class App extends Component<AppProps, AppState> {
 
   handleLogout() {
     this.props.auth.logout()
-  }
-
-  handleEditProfile() {
-
   }
 
   render() {
