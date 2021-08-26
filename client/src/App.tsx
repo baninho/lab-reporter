@@ -12,6 +12,8 @@ import { EditProfile } from './components/EditProfile'
 import { Groups } from './components/Groups'
 import { EditGroup } from './components/EditGroup'
 import { User } from './types/User'
+import { getUsers } from './api/users-api'
+import { parseUserId } from './util/utils'
 
 export interface AppProps {}
 
@@ -20,9 +22,17 @@ export interface AppProps {
   history: any
 }
 
-export interface AppState {}
+export interface AppState {
+  user: User
+  allUsers: User[]
+}
 
 export default class App extends Component<AppProps, AppState> {
+  state: AppState = {
+    user: new User('', '', ['']),
+    allUsers: [new User('', '', [''])]
+  }
+  
   constructor(props: AppProps) {
     super(props)
 
@@ -36,6 +46,28 @@ export default class App extends Component<AppProps, AppState> {
 
   handleLogout() {
     this.props.auth.logout()
+  }
+
+  /**
+   * Fetch the current user from API
+   */
+   fetchUser = async () => {
+    try {
+      const users: User[] = await getUsers(this.props.auth.idToken)
+      const user = users.find(u => {
+        return u.userId === parseUserId(this.props.auth.idToken)
+      })
+      this.setState({
+        user: user ? user : this.state.user,
+        allUsers: users
+      })
+    } catch (e) {
+      alert(`Failed to fetch user: ${e.message}`)
+    }
+  }
+
+  componentDidMount = async () => {
+    await this.fetchUser()
   }
 
   render() {
@@ -92,7 +124,7 @@ export default class App extends Component<AppProps, AppState> {
     if (this.props.auth.isAuthenticated()) { 
       return(
         <Menu.Item name="profile">
-          <Link to="/profile">Profil</Link>
+          <Link to="/profile">{this.state.user.name}</Link>
         </Menu.Item>
       )
     }
