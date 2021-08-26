@@ -32,7 +32,7 @@ export default class App extends Component<AppProps, AppState> {
     user: new User('', '', ['']),
     allUsers: [new User('', '', [''])]
   }
-  
+
   constructor(props: AppProps) {
     super(props)
 
@@ -197,7 +197,10 @@ export default class App extends Component<AppProps, AppState> {
           path="/groups/:groupId"
           exact
           render={props => {
-            return <EditGroup {...props} auth={this.props.auth} />
+            return <EditGroup {...props} auth={this.props.auth} 
+            user={this.state.user}
+            allUsers={this.state.allUsers}
+            />
           }}
         />
 
