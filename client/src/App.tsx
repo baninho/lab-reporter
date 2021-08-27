@@ -15,8 +15,6 @@ import { User } from './types/User'
 import { getUsers } from './api/users-api'
 import { parseUserId } from './util/utils'
 
-export interface AppProps {}
-
 export interface AppProps {
   auth: Auth
   history: any
@@ -62,12 +60,20 @@ export default class App extends Component<AppProps, AppState> {
         allUsers: users
       })
     } catch (e) {
-      alert(`Failed to fetch user: ${e.message}`)
+      console.log(`Failed to fetch user: ${e.message}`)
+    }
+  }
+
+  componentDidUpdate = async () => {
+    if (this.props.auth.isAuthenticated()) {
+      await this.fetchUser()
     }
   }
 
   componentDidMount = async () => {
-    await this.fetchUser()
+    if (this.props.auth.isAuthenticated()) {
+      await this.fetchUser()
+    }
   }
 
   render() {
@@ -181,7 +187,9 @@ export default class App extends Component<AppProps, AppState> {
           path="/profile"
           exact
           render={props => {
-            return <EditProfile {...props} auth={this.props.auth} />
+            return <EditProfile {...props} auth={this.props.auth} 
+            user={this.state.user}
+            />
           }}
         />
 
