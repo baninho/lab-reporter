@@ -20,6 +20,7 @@ import { EntryList } from './EntryList'
 interface EntriesProps {
   auth: Auth
   history: History
+  rendercb: any
 }
 
 interface EntriesState {
@@ -107,6 +108,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
   async componentDidMount() {
     try {
+      this.props.rendercb()
       const entries = await getEntries(this.props.auth.getIdToken())
       const groups = await getGroups(this.props.auth.getIdToken())
       this.setState({

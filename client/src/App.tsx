@@ -64,8 +64,12 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
+  rendercb() {
+    this.setState({allUsers: []})
+  }
+
   componentDidUpdate = async () => {
-    if (this.props.auth.isAuthenticated() && !this.state.allUsers.length) {
+    if (this.props.auth.isAuthenticated() && this.state.allUsers.length === 0) {
       await this.fetchUser()
     }
   }
@@ -163,7 +167,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Entries {...props} auth={this.props.auth} />
+            return <Entries {...props} auth={this.props.auth} rendercb={this.rendercb.bind(this)}/>
           }}
         />
 
