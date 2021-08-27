@@ -145,10 +145,18 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     console.log('new: ' + newId)
     console.log('removed: ' + removedId)
 
-    this.setState({
+    const stateUpdate = {
       ownerIds: value,
-      memberIds: this.state.memberIds.includes(newId) ? this.state.memberIds : [...this.state.memberIds, newId]
-    })
+      memberIds: this.state.memberIds
+    }
+
+    if (newId !== undefined) {
+      stateUpdate.memberIds = this.state.memberIds.includes(newId) ? this.state.memberIds : [...this.state.memberIds, newId]
+    }
+
+    this.setState(stateUpdate)
+
+    console.log(this.state.memberIds)
   }
 
   /**
