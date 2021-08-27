@@ -12,6 +12,7 @@ import { getGroups } from "../api/groups-api";
 interface EditProfileProps {
   auth: Auth
   history: History
+  user: User
 }
 
 interface EditProfileState {
@@ -93,10 +94,12 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
 
   async componentDidMount() {
     this.setState({
-      loading: true
+      loading: true,
+      user: this.props.user,
+      name: this.props.user.name,
+      groupIds: this.props.user.groups
     })
 
-    await this.fetchUser()
     await this.fetchGroups()
 
     this.setState({
