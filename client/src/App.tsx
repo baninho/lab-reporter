@@ -65,7 +65,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   componentDidUpdate = async () => {
-    if (this.props.auth.isAuthenticated()) {
+    if (this.props.auth.isAuthenticated() && !this.state.allUsers.length) {
       await this.fetchUser()
     }
   }
