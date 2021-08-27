@@ -16,11 +16,15 @@ interface EntryListState {
 }
 
 export class EntryList extends React.PureComponent<EntryListProps, EntryListState> {
+  options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
   render() {
     return (
       <Container>
       {this.props.entries.map((entry, pos) => {
+        const createdAt = new Date(entry.createdAt)
         const group = this.props.groups.find((g) => {return g.groupId === entry.groupId})
+        
         return (
           <Grid key={entry.entryId}>
           <Grid.Row>
@@ -31,7 +35,7 @@ export class EntryList extends React.PureComponent<EntryListProps, EntryListStat
               {group ? group.name : ''}
             </Grid.Column>
             <Grid.Column width={3} floated="right">
-              {entry.createdAt}
+              {createdAt.toLocaleDateString('de-DE', this.options)}
             </Grid.Column>
             <Grid.Column width={2} floated="right">
               <Button
