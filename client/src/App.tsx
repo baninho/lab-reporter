@@ -116,11 +116,11 @@ export default class App extends Component<AppProps, AppState> {
           <Image size="mini" src='/LOGO_MushRoom_farbirg-weiß-scaled.png' />
         </Menu.Item>
         <Menu.Item header>Laborbuch</Menu.Item>
-        <Menu.Item name="home">
-          <Link to="/">Home</Link>
+        <Menu.Item name="home" onClick={() => this.props.history.push('/')}>
+          Home
         </Menu.Item>
-        <Menu.Item name="home">
-          <Link to="/groups">Projekte</Link>
+        <Menu.Item name="home" onClick={() => this.props.history.push('/groups')}>
+          Projekte
         </Menu.Item>
 
         <Menu.Menu position="right">
@@ -134,8 +134,8 @@ export default class App extends Component<AppProps, AppState> {
   profileButton() {
     if (this.props.auth.isAuthenticated()) { 
       return(
-        <Menu.Item name="profile">
-          <Link to="/profile">{this.state.user.name}</Link>
+        <Menu.Item name="profile" onClick={() => this.props.history.push('/profile')}>
+          {this.state.user.name}
         </Menu.Item>
       )
     }
