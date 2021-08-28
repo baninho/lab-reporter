@@ -64,9 +64,10 @@ export default class Auth {
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
 
-    // navigate to the home route
-    console.log(localStorage.getItem('uri'))
+    // callback to App component after auth is successful
     this.authcb()
+
+    // navigate to the requested path
     this.history.replace(localStorage.getItem('uri'));
   }
 
