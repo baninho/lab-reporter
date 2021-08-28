@@ -9,13 +9,13 @@ const paths = {
   prod_build: '../prod-build',
   server_file_name: 'server.bundle.js',
   react_src: '../client/build/**/*',
-  react_dist: '../prod-build/client/build',
+  react_dist: '../prod-build/build',
   zipped_file_name: 'react-nodejs.zip'
 };
 
 function clean()  {
   log('removing the old files in the directory')
-  return del(['../prod-build/*.*', '../prod-build/client/**'], {force:true});
+  return del(['../prod-build/build/*.*', '../prod-build/build/**'], {force:true});
 }
 
 function createProdBuildFolder() {

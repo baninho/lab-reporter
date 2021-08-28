@@ -6,13 +6,13 @@ const http = require('http');
 const server = http.createServer(app);
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+  res.sendFile(path.join(__dirname, 'build/index.html'));
 });
 
 const port = process.env.PORT || 5000;

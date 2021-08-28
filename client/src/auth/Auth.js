@@ -24,9 +24,11 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
+    this.authcb = () => {}
   }
 
-  login() {
+  login(redirectUri) {
+    localStorage.setItem('uri', redirectUri)
     this.auth0.authorize();
   }
 
@@ -62,8 +64,11 @@ export default class Auth {
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
 
-    // navigate to the home route
-    this.history.replace('/');
+    // callback to App component after auth is successful
+    this.authcb()
+
+    // navigate to the requested path
+    this.history.replace(localStorage.getItem('uri'));
   }
 
   renewSession() {

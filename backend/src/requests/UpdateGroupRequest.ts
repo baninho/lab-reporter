@@ -1,4 +1,6 @@
 export interface UpdateGroupRequest {
   groupId: string
-  name: string
+  name?: string
+  members?: string[]
+  owners?: string[]
 }

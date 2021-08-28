@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, Route, Router, Switch } from 'react-router-dom'
+import { Route, Router, Switch } from 'react-router-dom'
 import { Container, Grid, Menu, Segment, Image } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
@@ -11,17 +11,26 @@ import { Entries } from './components/Entries'
 import { EditProfile } from './components/EditProfile'
 import { Groups } from './components/Groups'
 import { EditGroup } from './components/EditGroup'
-
-export interface AppProps {}
+import { User } from './types/User'
+import { getUsers } from './api/users-api'
+import { parseUserId } from './util/utils'
 
 export interface AppProps {
   auth: Auth
   history: any
 }
 
-export interface AppState {}
+export interface AppState {
+  user: User
+  allUsers: User[]
+}
 
 export default class App extends Component<AppProps, AppState> {
+  state: AppState = {
+    user: new User('', '', ['']),
+    allUsers: [new User('', '', [''])]
+  }
+
   constructor(props: AppProps) {
     super(props)
 
@@ -37,8 +46,39 @@ export default class App extends Component<AppProps, AppState> {
     this.props.auth.logout()
   }
 
-  handleEditProfile() {
+  /**
+   * Fetch the current user from API
+   */
+   fetchUser = async () => {
+    try {
+      const users: User[] = await getUsers(this.props.auth.idToken)
+      const user = users.find(u => {
+        return u.userId === parseUserId(this.props.auth.idToken)
+      })
+      this.setState({
+        user: user ? user : this.state.user,
+        allUsers: users
+      })
+    } catch (e) {
+      console.log(`Failed to fetch user: ${e.message}`)
+    }
+  }
 
+  rendercb() {
+    this.setState({allUsers: []})
+  }
+
+  componentDidUpdate = async () => {
+    if (this.props.auth.isAuthenticated() && this.state.allUsers.length === 0) {
+      await this.fetchUser()
+    }
+  }
+
+  componentDidMount = async () => {
+    if (this.props.auth.isAuthenticated()) {
+      await this.fetchUser()
+    }
+    this.props.auth.authcb = this.rendercb.bind(this)
   }
 
   render() {
@@ -76,11 +116,11 @@ export default class App extends Component<AppProps, AppState> {
           <Image size="mini" src='/LOGO_MushRoom_farbirg-weiß-scaled.png' />
         </Menu.Item>
         <Menu.Item header>Laborbuch</Menu.Item>
-        <Menu.Item name="home">
-          <Link to="/">Home</Link>
+        <Menu.Item name="home" onClick={() => this.props.history.push('/')}>
+          Home
         </Menu.Item>
-        <Menu.Item name="home">
-          <Link to="/groups">Projekte</Link>
+        <Menu.Item name="home" onClick={() => this.props.history.push('/groups')}>
+          Projekte
         </Menu.Item>
 
         <Menu.Menu position="right">
@@ -94,8 +134,8 @@ export default class App extends Component<AppProps, AppState> {
   profileButton() {
     if (this.props.auth.isAuthenticated()) { 
       return(
-        <Menu.Item name="profile">
-          <Link to="/profile">Profil</Link>
+        <Menu.Item name="profile" onClick={() => this.props.history.push('/profile')}>
+          {this.state.user.name}
         </Menu.Item>
       )
     }
@@ -119,7 +159,8 @@ export default class App extends Component<AppProps, AppState> {
 
   generateCurrentPage() {
     if (!this.props.auth.isAuthenticated()) {
-      return <LogIn auth={this.props.auth} />
+      return <LogIn auth={this.props.auth} 
+      uri={window.location.pathname}/>
     }
 
     return (
@@ -128,7 +169,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Entries {...props} auth={this.props.auth} />
+            return <Entries {...props} auth={this.props.auth}/>
           }}
         />
 
@@ -152,7 +193,9 @@ export default class App extends Component<AppProps, AppState> {
           path="/profile"
           exact
           render={props => {
-            return <EditProfile {...props} auth={this.props.auth} />
+            return <EditProfile {...props} auth={this.props.auth} 
+            user={this.state.user}
+            />
           }}
         />
 
@@ -168,7 +211,10 @@ export default class App extends Component<AppProps, AppState> {
           path="/groups/:groupId"
           exact
           render={props => {
-            return <EditGroup {...props} auth={this.props.auth} />
+            return <EditGroup {...props} auth={this.props.auth} 
+            user={this.state.user}
+            allUsers={this.state.allUsers}
+            />
           }}
         />
 

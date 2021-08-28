@@ -16,11 +16,20 @@ interface EntryListState {
 }
 
 export class EntryList extends React.PureComponent<EntryListProps, EntryListState> {
+  options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
   render() {
     return (
       <Container>
       {this.props.entries.map((entry, pos) => {
+        const createdAt = new Date(entry.createdAt)
         const group = this.props.groups.find((g) => {return g.groupId === entry.groupId})
+        let body: string
+        if (entry.body) {
+          body = entry.body.substring(0, 1000)
+          if (body.length < entry.body.length) body = body.concat('...')
+        } else body = ''
+        
         return (
           <Grid key={entry.entryId}>
           <Grid.Row>
@@ -31,7 +40,7 @@ export class EntryList extends React.PureComponent<EntryListProps, EntryListStat
               {group ? group.name : ''}
             </Grid.Column>
             <Grid.Column width={3} floated="right">
-              {entry.createdAt}
+              {createdAt.toLocaleDateString('de-DE', this.options)}
             </Grid.Column>
             <Grid.Column width={2} floated="right">
               <Button
@@ -54,12 +63,12 @@ export class EntryList extends React.PureComponent<EntryListProps, EntryListStat
           </Grid.Row>
           <Grid.Row>
             <Grid.Column width={2}>
-            {entry.attachments[0] && (
+              {entry.attachments[0] && (
               <Image src={entry.attachments[0].attachmentUrl} size="small" wrapped />
-            )}
-            </Grid.Column>
-            <Grid.Column  width={14}>
-              <span style={{whiteSpace: "pre-wrap"}}>{entry.body}</span>
+              )}
+              </Grid.Column>
+            <Grid.Column  width={12}>
+              <span style={{whiteSpace: "pre-wrap"}}>{body}</span>
             </Grid.Column>
           </Grid.Row>
           <Divider />

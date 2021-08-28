@@ -4,13 +4,14 @@ import { Button, Container } from 'semantic-ui-react'
 
 interface LogInProps {
   auth: Auth
+  uri: string
 }
 
 interface LogInState {}
 
 export class LogIn extends React.PureComponent<LogInProps, LogInState> {
   onLogin = () => {
-    this.props.auth.login()
+    this.props.auth.login(this.props.uri)
   }
 
   render() {

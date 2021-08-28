@@ -3,8 +3,6 @@ import { Button, Container, Divider, Dropdown, DropdownProps, Form, Grid, Loader
 import Auth from "../auth/Auth";
 import { User } from "../types/User";
 import { History } from 'history'
-import { parseUserId } from "../util/utils";
-import { getUsers } from "../api/users-api";
 import { Group } from "../types/Group";
 import { getGroups, updateGroup } from "../api/groups-api";
 import { UpdateGroupRequest } from "../types/UpdateGroupRequest";
@@ -17,15 +15,15 @@ interface EditGroupProps {
   }
   auth: Auth
   history: History
+  allUsers: User[]
+  user: User
 }
 
 interface EditGroupState {
   group: Group
-  user: User
   loading: boolean
   name: string
   allGroups: Group[]
-  allUsers: User[]
   ownerIds: string[]
   memberIds: string[]
 }
@@ -33,11 +31,9 @@ interface EditGroupState {
 export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupState> {
   state: EditGroupState = {
     group: new Group('', ''),
-    user: new User('', '', []),
     loading: true,
     name: '',
     allGroups: [],
-    allUsers: [],
     ownerIds: [],
     memberIds: []
   }
@@ -52,7 +48,7 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     event.preventDefault()
 
     try {
-      if (!this.state.user) {
+      if (!this.props.user) {
         alert('Konnte User nicht laden')
         return
       }
@@ -80,15 +76,15 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
 
   /**
    * Handle submit of members/owners form
+   * preprocess and make the API call to update group members/owners
    * @param event React submit event
    * @returns nothing
    */
   handleUsersSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
-
-    // TODO: preprocess and make the API call to update group members/owners
+    
     try {
-      if (!this.state.user) {
+      if (!this.props.user) {
         alert('Konnte User nicht laden')
         return
       }
@@ -96,11 +92,19 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       this.setState({
         loading: true
       })
+
+      const groupUpdate: UpdateGroupRequest = {
+        groupId: this.state.group.groupId,
+        members: this.state.memberIds,
+        owners: this.state.ownerIds
+      }
+
+      await updateGroup(this.props.auth.idToken, groupUpdate)
       
     } catch (e) {
       alert('Nicht aktualisiert: ' + e.message)
     } finally {
-      await this.fetchUser()
+      await this.fetchGroups()
       this.setState({
         loading: false
       })
@@ -141,10 +145,18 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     console.log('new: ' + newId)
     console.log('removed: ' + removedId)
 
-    this.setState({
+    const stateUpdate = {
       ownerIds: value,
-      memberIds: this.state.memberIds.includes(newId) ? this.state.memberIds : [...this.state.memberIds, newId]
-    })
+      memberIds: this.state.memberIds
+    }
+
+    if (newId !== undefined) {
+      stateUpdate.memberIds = this.state.memberIds.includes(newId) ? this.state.memberIds : [...this.state.memberIds, newId]
+    }
+
+    this.setState(stateUpdate)
+
+    console.log(this.state.memberIds)
   }
 
   /**
@@ -178,24 +190,6 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
   }
 
   /**
-   * Fetch the current user from API
-   */
-  fetchUser = async () => {
-    try {
-      const users: User[] = await getUsers(this.props.auth.idToken)
-      const user = users.find(u => {
-        return u.userId === parseUserId(this.props.auth.idToken)
-      })
-      this.setState({
-        user: user ? user : this.state.user,
-        allUsers: users
-      })
-    } catch (e) {
-      alert(`Failed to fetch user: ${e.message}`)
-    }
-  }
-
-  /**
    * Fetch all existing groups from API
    */
   fetchGroups = async () => {
@@ -221,7 +215,6 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
       loading: true
     })
 
-    await this.fetchUser()
     await this.fetchGroups()
 
     this.setState({
@@ -234,7 +227,7 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
    * @returns Group edit form JSX
    */
   renderGroupEdit() {
-    const options = this.state.allUsers.map((u) => {
+    const options = this.props.allUsers.map((u) => {
       return {
         key: u.userId,
         text: u.name ? u.name : 'unnamed user',
