@@ -14,7 +14,6 @@ import { EditGroup } from './components/EditGroup'
 import { User } from './types/User'
 import { getUsers } from './api/users-api'
 import { parseUserId } from './util/utils'
-import { authConfig } from './config'
 
 export interface AppProps {
   auth: Auth
