@@ -24,6 +24,7 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
+    this.authcb = () => {}
   }
 
   login(uri) {
@@ -65,6 +66,7 @@ export default class Auth {
 
     // navigate to the home route
     console.log(localStorage.getItem('uri'))
+    this.authcb()
     this.history.replace(localStorage.getItem('uri'));
   }
 

@@ -14,6 +14,7 @@ import { EditGroup } from './components/EditGroup'
 import { User } from './types/User'
 import { getUsers } from './api/users-api'
 import { parseUserId } from './util/utils'
+import { authConfig } from './config'
 
 export interface AppProps {
   auth: Auth
@@ -78,6 +79,7 @@ export default class App extends Component<AppProps, AppState> {
     if (this.props.auth.isAuthenticated()) {
       await this.fetchUser()
     }
+    this.props.auth.authcb = this.rendercb.bind(this)
   }
 
   render() {
@@ -168,7 +170,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Entries {...props} auth={this.props.auth} rendercb={this.rendercb.bind(this)}/>
+            return <Entries {...props} auth={this.props.auth}/>
           }}
         />
 
