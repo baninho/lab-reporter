@@ -26,7 +26,8 @@ export default class Auth {
     this.renewSession = this.renewSession.bind(this);
   }
 
-  login() {
+  login(uri) {
+    localStorage.setItem('uri', uri)
     this.auth0.authorize();
   }
 
@@ -63,7 +64,8 @@ export default class Auth {
     this.expiresAt = expiresAt;
 
     // navigate to the home route
-    this.history.replace('/');
+    console.log(localStorage.getItem('uri'))
+    this.history.replace(localStorage.getItem('uri'));
   }
 
   renewSession() {
