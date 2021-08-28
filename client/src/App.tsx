@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, Route, Router, Switch } from 'react-router-dom'
+import { Route, Router, Switch } from 'react-router-dom'
 import { Container, Grid, Menu, Segment, Image } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
