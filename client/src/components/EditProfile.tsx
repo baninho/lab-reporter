@@ -93,11 +93,14 @@ export class EditProfile extends React.PureComponent<EditProfileProps, EditProfi
   }
 
   async componentDidMount() {
+    let user = this.props.user.userId === '' 
+    ? await getUserById(this.props.auth.idToken, parseUserId(this.props.auth.idToken))
+    : this.props.user
     this.setState({
       loading: true,
-      user: this.props.user,
-      name: this.props.user.name,
-      groupIds: this.props.user.groups
+      user,
+      name: user.name,
+      groupIds: user.groups
     })
 
     await this.fetchGroups()
