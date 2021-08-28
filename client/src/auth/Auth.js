@@ -27,8 +27,8 @@ export default class Auth {
     this.authcb = () => {}
   }
 
-  login(uri) {
-    localStorage.setItem('uri', uri)
+  login(redirectUri) {
+    localStorage.setItem('uri', redirectUri)
     this.auth0.authorize();
   }
 
