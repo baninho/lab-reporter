@@ -25,7 +25,7 @@ interface EditProfileState {
 
 export class EditProfile extends React.PureComponent<EditProfileProps, EditProfileState> {
   state: EditProfileState = {
-    user: new User("", "", []),
+    user: new User('', '', []),
     loading: true,
     name: '',
     allGroups: [],
