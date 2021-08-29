@@ -68,7 +68,8 @@ export default class Auth {
     this.authcb()
 
     // navigate to the requested path
-    this.history.replace(localStorage.getItem('uri'));
+    let requestedUri = localStorage.getItem('uri')
+    this.history.replace(requestedUri ? requestedUri : '/');
   }
 
   renewSession() {
