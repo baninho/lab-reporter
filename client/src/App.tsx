@@ -135,7 +135,7 @@ export default class App extends Component<AppProps, AppState> {
     if (this.props.auth.isAuthenticated()) { 
       return(
         <Menu.Item name="profile" onClick={() => this.props.history.push('/profile')}>
-          {this.state.user.name}
+          {this.state.user.name ? this.state.user.name : 'Profil'}
         </Menu.Item>
       )
     }
