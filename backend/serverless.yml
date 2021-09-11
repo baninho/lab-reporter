@@ -279,7 +279,7 @@ functions:
 
 resources:
   Resources:
-    ImagesDynamoDBTable:
+    EntriesDynamoDBTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
