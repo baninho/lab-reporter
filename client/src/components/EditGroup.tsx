@@ -26,6 +26,7 @@ interface EditGroupState {
   allGroups: Group[]
   ownerIds: string[]
   memberIds: string[]
+  errorMsg: string
 }
 
 export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupState> {
@@ -35,7 +36,8 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
     name: '',
     allGroups: [],
     ownerIds: [],
-    memberIds: []
+    memberIds: [],
+    errorMsg: ''
   }
 
   /**
@@ -64,8 +66,8 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
 
       await updateGroup(this.props.auth.idToken, groupUpdate)
       
-    } catch (e) {
-      alert('Nicht aktualisiert: ' + e.message)
+    } catch (e: any) {
+      this.setState({errorMsg: 'Nicht aktualisiert: ' + e.message})
     } finally {
       await this.fetchGroups()
       this.setState({
@@ -101,8 +103,8 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
 
       await updateGroup(this.props.auth.idToken, groupUpdate)
       
-    } catch (e) {
-      alert('Nicht aktualisiert: ' + e.message)
+    } catch (e: any) {
+      this.setState({errorMsg: 'Nicht aktualisiert: ' + e.message})
     } finally {
       await this.fetchGroups()
       this.setState({
@@ -205,8 +207,8 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
         ownerIds: group.owners,
         memberIds: group.members
       })
-    } catch (e) {
-      alert(`Failed to fetch groups: ${e.message}`)
+    } catch (e: any) {
+      this.setState({errorMsg: `Failed to fetch groups: ${e.message}`})
     }
   }
 
@@ -267,6 +269,7 @@ export class EditGroup extends React.PureComponent<EditGroupProps, EditGroupStat
         </Form.Input>
         <Button positive>Speichern</Button>
         </Form>
+        <p style={{color: 'red'}}>{this.state.errorMsg || ''}</p>
         <Divider/>
       </Container>
     )
