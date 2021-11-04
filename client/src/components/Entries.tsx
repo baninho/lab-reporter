@@ -84,13 +84,13 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
 
       this.props.history.push(`/entries/${newEntry.entryId}/edit`)
 
-    } catch(e) {
+    } catch(e: any) {
       alert('Entry creation failed: ' + e.message)
     }
   }
 
   onEntryDelete = async (entryId: string) => {
-    if (!window.confirm('Wirklich löschen?')) return
+    if (!window.confirm('Wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return
     try {
       this.setState({
         loadingEntries: true
@@ -100,7 +100,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         entries: this.state.entries.filter(entry => entry.entryId !== entryId),
         loadingEntries: false
       })
-    } catch(e) {
+    } catch(e: any) {
       alert('Entry deletion failed: ' + e.message)
     }
   }
@@ -114,7 +114,7 @@ export class Entries extends React.PureComponent<EntriesProps, EntriesState> {
         loadingEntries: false,
         groups
       })
-    } catch (e) {
+    } catch (e: any) {
       alert(`Failed to fetch entries: ${e.message}`)
     }
   }
